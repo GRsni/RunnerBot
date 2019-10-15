@@ -5,21 +5,20 @@
 #include "bot.h"
 #include "Utility.h"
 
-tEstado *crearEstado(int celdas[N][N], int tam) {
+tEstado *crearEstado(int celdas[N][N]) {
     tEstado *estado=(tEstado *)malloc(sizeof(tEstado));
     int i, j;
-    estado->tam=tam;
-    for(i=0; i<tam; i++) {
-        for(j=0; j<tam; j++) {
+    for(i=0; i<N; i++) {
+        for(j=0; j<N; j++) {
             int valor=celdas[i][j];
             if(celdas[i][j]==ROBOT) {
                 estado->robotX=i;
                 estado->robotY=j;
-                valor=1;
+                valor=VACIO;
             } else if(celdas[i][j]==RATON) {
                 estado->mouseX=i;
                 estado->mouseY=j;
-                valor=1;
+                valor=VACIO;
             }
             estado->celdas[i][j]=valor;
         }
@@ -28,13 +27,11 @@ tEstado *crearEstado(int celdas[N][N], int tam) {
 }
 
 tEstado* introducirEstado() {
-    int casillas, i, j, valido=1, robotIn=0, ratonIn=0;
-    printf("Introduce el numero de casillas: ");
-    scanf("%d", &casillas);
-    int celdas[casillas][casillas];
+    int i, j, valido=1, robotIn=0, ratonIn=0;
+    int celdas[N][N];
 
-    for(i=0; i<casillas; i++) {
-        for(j=0; j<casillas; j++) {
+    for(i=0; i<N; i++) {
+        for(j=0; j<N; j++) {
             do {
                 printf("Elige que hay en la celda[%d, %d]:\nVACIO[0]|PARED[1]", i, j);
                 if(!robotIn) {
@@ -58,30 +55,76 @@ tEstado* introducirEstado() {
             } while(celdas[i][j]<VACIO||celdas[i][j]>RATON||!valido);
         }
     }
-    for(i=0; i<casillas; i++) {
-        for(j=0; j<casillas; j++) {
+    for(i=0; i<N; i++) {
+        for(j=0; j<N; j++) {
             printf("%d", celdas[i][j]);
         }
         printf("\n");
     }
-    return crearEstado(celdas, casillas);
+    return crearEstado(celdas);
 
 }
 
 tEstado* estadoInicial2() {
-    return crearEstado(&mapa_inicial2, 2);
+    return crearEstado(mapa_inicial2);
 }
 
 tEstado* estadoInicial3() {
-    return crearEstado(&mapa_inicial3, 3);
+    return crearEstado(mapa_inicial3);
 }
 
 tEstado* estadoInicial4() {
-    return crearEstado(&mapa_inicial4, 4);
+    return crearEstado(mapa_inicial4);
+}
+
+tEstado* estadoInicial5() {
+    return crearEstado(mapa_inicial5);
+}
+
+tEstado* eligeOpcionCrearEstado() {
+    char eleccion;
+    int opcion=N;
+    printf("Quieres crear un estado desde cero o elegir uno de los existentes?[s]i/[n]o: ");
+    scanf("%c", &eleccion);
+    if(eleccion=='s') {
+        opcion=0;
+    }
+    return eligeEstado(opcion);
+}
+
+tEstado* eligeEstado(int n) {
+    tEstado* estado;
+    switch(n) {
+    case 2:
+        estado=estadoInicial2();
+        break;
+    case 3:
+        estado=estadoInicial3();
+        break;
+    case 4:
+        estado= estadoInicial4();
+        break;
+    case 5:
+        estado= estadoInicial5();
+        break;
+    default:
+        estado= introducirEstado();
+        break;
+    }
+    return estado;
 }
 
 tEstado* estadoObjetivo() {
-//    tEstado objetivo=crearEstado()
+    tEstado *objetivo = eligeEstado(N);
+
+    objetivo->celdas[objetivo->robotX][objetivo->robotY]==VACIO;
+    objetivo->robotX=N-1;
+    objetivo->robotY=N-1;
+    objetivo->celdas[N-1][N-1]==ROBOT;
+
+    dispEstado(objetivo);
+
+    return eligeEstado(N);
 }
 
 int coste(unsigned op, tEstado *estado) {
@@ -105,18 +148,18 @@ int esValido(unsigned op, tEstado *estado) {
 
         break;
     }
-    return 1;
+    return valido;
 }
 
 void dispEstado(tEstado *estado) {
     int i, j;
     printf("Estado actual:\n");
-    printGridLine(estado->tam);
-    for(i=0; i<estado->tam; i++) {
+    printGridLine(N);
+    for(i=0; i<N; i++) {
         printf("|");
-        for(j=0; j<estado->tam; j++) {
+        for(j=0; j<N; j++) {
             char valor=' ';
-            printf("Valor: %d", estado->celdas[i][j]);
+//            printf("Valor: %d", estado->celdas[i][j]);
             if(i==estado->robotX&&j==estado->robotY) {
                 valor=64;
             } else if(i==estado->mouseX&&j==estado->mouseY) {
@@ -127,7 +170,7 @@ void dispEstado(tEstado *estado) {
             printf(" %c |", valor);
         }
         printf("\n");
-        printGridLine(estado->tam);
+        printGridLine(N);
     }
 
     printf("\nRobot[%d, %d], Raton[%d, %d]\n", estado->robotX, estado->robotY, estado->mouseX, estado->mouseY);

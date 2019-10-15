@@ -4,7 +4,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 4
+#define N 2
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -40,9 +40,18 @@ static int mapa_inicial4[4][4]= {
     {VACIO, VACIO, PARED, PARED}
 };
 
+static int mapa_inicial5[5][5]= {
+    {VACIO, PARED, VACIO, VACIO, PARED},
+    {VACIO, VACIO, PARED, PARED, VACIO},
+    {PARED, VACIO, RATON, VACIO, VACIO},
+    {VACIO, ROBOT, PARED, PARED, VACIO},
+    {VACIO, VACIO, VACIO, VACIO, VACIO}
+};
+
+
 /* A partir de una configuración de fichas construye un estado válido para el problema
   de acuerdo al tipo de datos tEstado. */
-tEstado* crearEstado(int celdas[N][N], int tam);
+tEstado* crearEstado(int celdas[N][N]);
 
 /*Crea el estado inicial a partir de entrada por teclado. Pide los datos de las paredes, y posicion del raton y robot*/
 tEstado* introducirEstado();
@@ -53,6 +62,16 @@ tEstado* estadoInicial2();
 tEstado* estadoInicial3();
 
 tEstado* estadoInicial4();
+
+tEstado* estadoInicial5();
+
+/* Genera el estado final a partir de crearEstado y el estado actual */
+tEstado *estadoObjetivo();+
+
+/*Crea el estado con el tamaño correcto segun en valor de la constante N*/
+tEstado* eligeEstado(int n);
+
+tEstado* eligeOpcionCrearEstado();
 
 /* Devuelve el coste de aplicar el operador. */
 int coste(unsigned op, tEstado *estado);
@@ -65,9 +84,6 @@ void dispOperador(unsigned op);
 
 /*Selecciona el caracter a mostrar en pantalla segun el valor numerico */
 char getCaracter(int num);
-
-/* Genera el estado final a partir de crearEstado y el estado actual */
-tEstado *estadoObjetivo();
 
 /* Comprueba si es posible aplicar un operador a una configuración determinada para el puzle.
   Devuelve 1 si el movimiento es válido y 0 en otro caso. */

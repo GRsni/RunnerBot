@@ -4,7 +4,8 @@
 #include "utility.h"
 
 int main() {
-    tEstado *inicial=estadoInicial2();
+    tEstado *inicial=eligeOpcionCrearEstado();
     dispEstado(inicial);
+    estadoObjetivo();
     return 0;
 }
