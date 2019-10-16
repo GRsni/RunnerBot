@@ -92,9 +92,9 @@ tEstado* eligeOpcionCrearEstado() {
     return eligeEstado(opcion);
 }
 
-tEstado* eligeEstado(int n) {
+tEstado* eligeEstado() {
     tEstado* estado;
-    switch(n) {
+    switch(N) {
     case 2:
         estado=estadoInicial2();
         break;
@@ -114,19 +114,6 @@ tEstado* eligeEstado(int n) {
     return estado;
 }
 
-tEstado* estadoObjetivo() {
-    tEstado *objetivo = eligeEstado(N);
-
-    objetivo->celdas[objetivo->robotX][objetivo->robotY]==VACIO;
-    objetivo->robotX=N-1;
-    objetivo->robotY=N-1;
-    objetivo->celdas[N-1][N-1]==ROBOT;
-
-    dispEstado(objetivo);
-
-    return eligeEstado(N);
-}
-
 int coste(unsigned op, tEstado *estado) {
     return 1;
 }
@@ -135,9 +122,9 @@ int esValido(unsigned op, tEstado *estado) {
     int valido=1;
     switch(op) {
     case ARRIBA:
-        if(estado->robotY==0||estado->celdas[estado->robotX][estado->robotY-1]==PARED)
 
-            break;
+
+        break;
     case ABAJO:
 
         break;
@@ -151,6 +138,13 @@ int esValido(unsigned op, tEstado *estado) {
     return valido;
 }
 
+int compruebaArriba(tEstado *estado) {
+    int valido=0;
+    int rFil=estado->robotY, mCol=estado->mouseX;
+    if(rFil==0||estado->celdas[estado->robotX][rFil-1]==PARED||estado->celdas[estado->mou])
+    {}
+}
+
 void dispEstado(tEstado *estado) {
     int i, j;
     printf("Estado actual:\n");
@@ -158,16 +152,16 @@ void dispEstado(tEstado *estado) {
     for(i=0; i<N; i++) {
         printf("|");
         for(j=0; j<N; j++) {
-            char valor=' ';
+            char c=' ';
 //            printf("Valor: %d", estado->celdas[i][j]);
             if(i==estado->robotX&&j==estado->robotY) {
-                valor=64;
+                c=64;
             } else if(i==estado->mouseX&&j==estado->mouseY) {
-                valor=153;
+                c=-103;
             } else if (estado->celdas[i][j]==PARED) {
-                valor=178;
+                c=-78;
             }
-            printf(" %c |", valor);
+            printBlock(c);
         }
         printf("\n");
         printGridLine(N);
@@ -176,18 +170,6 @@ void dispEstado(tEstado *estado) {
     printf("\nRobot[%d, %d], Raton[%d, %d]\n", estado->robotX, estado->robotY, estado->mouseX, estado->mouseY);
 }
 
-char getCaracter(int num) {
-    char caracter;
-    switch(num) {
-    case PARED:
-        caracter=178;
-        break;
-    default:
-        caracter=' ';
-        break;
-    }
-    return caracter;
-}
 
 void dispOperador(unsigned op) {
     switch(op) {

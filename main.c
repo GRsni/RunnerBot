@@ -6,6 +6,5 @@
 int main() {
     tEstado *inicial=eligeOpcionCrearEstado();
     dispEstado(inicial);
-    estadoObjetivo();
     return 0;
 }
