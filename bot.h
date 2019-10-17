@@ -24,7 +24,7 @@ typedef struct {
 
 static int mapa_inicial2[2][2]= {
     {RATON, ROBOT},
-    {PARED, VACIO}
+    {VACIO, VACIO}
 };
 
 static int mapa_inicial3[3][3]= {
@@ -76,6 +76,9 @@ int coste(unsigned op, tEstado *estado);
 /* Muestra el contenido del puzle. */
 void dispEstado(tEstado *estado);
 
+/*Muestra la posicion del raton y del robot*/
+void dispPosRobotRaton(int rx, int ry, int mx, int my);
+
 /* Muestra el nombre de cada operador: Arriba, Abajo, Izquierda, Derecha. */
 void dispOperador(unsigned op);
 
@@ -84,7 +87,16 @@ void dispOperador(unsigned op);
 int esValido(unsigned op, tEstado* estado);
 
 /*Comprueba las codiciones del operador ARRIBA*/
-int compruebaArriba(tEstado estado);
+int compruebaArriba(tEstado *estado);
+
+/*Comprueba las codiciones del operador ABAJO*/
+int compruebaAbajo(tEstado *estado);
+
+/*Comprueba las codiciones del operador IZQUIERDA*/
+int compruebaIzquierda(tEstado *estado);
+
+/*Comprueba las codiciones del operador DERECHA*/
+int compruebaDerecha(tEstado *estado);
 
 /* Aplica un operador a una configuración concreta del puzle.
   Devuelve la nueva configuración del tablero tras el movimiento. */
