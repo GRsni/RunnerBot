@@ -4,7 +4,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 2
+#define N 3
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -16,15 +16,14 @@
 #define _tEstado_
 typedef struct {
     int celdas[N][N];
-    int robotX, robotY, mouseX, mouseY;
-    int tam;
+    int robCol, robRow, mouseCol, mouseRow;
 } tEstado;
 
 #endif
 
 static int mapa_inicial2[2][2]= {
-    {RATON, ROBOT},
-    {VACIO, VACIO}
+    {ROBOT, VACIO},
+    {VACIO, RATON}
 };
 
 static int mapa_inicial3[3][3]= {
@@ -75,6 +74,9 @@ int coste(unsigned op, tEstado *estado);
 
 /* Muestra el contenido del puzle. */
 void dispEstado(tEstado *estado);
+
+/*Muestra la matriz de estado de forma numerica*/
+void dispEstadoNum(tEstado *estado);
 
 /*Muestra la posicion del raton y del robot*/
 void dispPosRobotRaton(int rx, int ry, int mx, int my);

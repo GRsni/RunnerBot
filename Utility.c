@@ -13,7 +13,7 @@ void printGridLine(int cols) {
     printf("\n");
 }
 
-void printBlock(char c) {
+void printWall(char c) {
     if(c==-78) {
         printf("%c%c%c|", c, c, c);
     } else {
