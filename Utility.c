@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 #include "Utility.h"
+#include "bot.h"
 
 void printGridLine(int cols) {
     int i;
@@ -13,8 +14,8 @@ void printGridLine(int cols) {
     printf("\n");
 }
 
-void printWall(char c) {
-    if(c==-78) {
+void printIcon(char c) {
+    if(c==PAREDC) {
         printf("%c%c%c|", c, c, c);
     } else {
         printf(" %c |", c);

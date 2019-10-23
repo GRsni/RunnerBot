@@ -62,11 +62,12 @@ tEstado *crearEstado(int celdas[N][N]) {
             printf("Fila %d, columna %d\n", i, j);
             int valor=celdas[i][j];
             if(celdas[i][j]==ROBOT) {
-                printf("%d, %d", i, j);
-                estado->robRow=i;
-                estado->robCol=j;
+                printf("Robot\n");
+                estado->robRow=j;
+                estado->robCol=i;
                 valor=VACIO;
             } else if(celdas[i][j]==RATON) {
+                printf("raton\n");
                 estado->mouseRow=i;
                 estado->mouseCol=j;
                 valor=VACIO;
@@ -140,25 +141,26 @@ int esValido(unsigned op, tEstado *estado) {
 }
 
 int compruebaArriba(tEstado *estado) {
-    int rX=estado->robCol, rY=estado->robotY, mX=estado->mouseX, mY=estado->mouseY;
+    int rX=estado->robCol, rY=estado->robRow, mX=estado->mouseCol, mY=estado->mouseRow;
     printf("%d, %d, %d\n", rY==0, estado->celdas[rX][rY-1]==PARED, rX==mX-1&&rY==mY-2);
     return !(rY==0 ||estado->celdas[rX][rY-1]==PARED||(rX==mX-1&&rY==mY));
 }
 
 int compruebaAbajo(tEstado *estado) {
-    int rX=estado->robCol, rY=estado->robotY, mX=estado->mouseX, mY=estado->mouseY;
+    int rX=estado->robCol, rY=estado->robRow, mX=estado->mouseCol, mY=estado->mouseRow;
+    dispPosRobotRaton(rX, rY, mX, mY);
     printf("%d, %d, %d\n", rY==N-1, estado->celdas[rX][rY+1]==PARED, rX==mX-1&&rY==mY-2);
     return !(rY==N-1||estado->celdas[rX][rY+1]==PARED||(rX==mX-1&&rY==mY-2));
 }
 
 int compruebaIzquierda(tEstado *estado) {
-    int rX=estado->robCol, rY=estado->robotY, mX=estado->mouseX, mY=estado->mouseY;
+    int rX=estado->robCol, rY=estado->robRow, mX=estado->mouseCol, mY=estado->mouseRow;
     printf("%d, %d, %d\n", rX==0, estado->celdas[rX-1][rY]==PARED, rX==mX+2&&rY==mY+1);
     return !(rX==0||estado->celdas[rX-1][rY]==PARED||(rX==mX+2&&rY==mY+1));
 }
 
 int compruebaDerecha(tEstado *estado) {
-    int rX=estado->robCol, rY=estado->robotY, mX=estado->mouseX, mY=estado->mouseY;
+    int rX=estado->robCol, rY=estado->robRow, mX=estado->mouseCol, mY=estado->mouseRow;
     printf("%d, %d, %d\n", rX==N-1, estado->celdas[rX+1][rY]==PARED, rX==mX&&rY==mY+1);
     return !(rX==N-1||estado->celdas[rX+1][rY]==PARED||(rX==mX&&rY==mY+1));
 }
@@ -167,31 +169,37 @@ void dispEstado(tEstado *estado) {
     int i, j;
     printf("Estado actual:\n");
     printGridLine(N);
-    for(j=0; j<N; j++) {
+    for(i=0; i<N; i++) {
         printf("|");
-        for(i=0; i<N; i++) {
+        for(j=0; j<N; j++) {
             char c=' ';
-            if(i==estado->robCol&&j==estado->robotY) {
-                c=254;
-            } else if(i==estado->mouseX&&j==estado->mouseY) {
-                c=-103;
+            if(i==estado->robRow&j==estado->robCol) {
+                c=ROBOTC;
+            } else if(i==estado->mouseRow&&j==estado->mouseCol) {
+                c=RATONC;
             } else if (estado->celdas[i][j]==PARED) {
-                c=-78;
+                c=PAREDC;
             }
-            printWall(c);
+            printIcon(c);
         }
         printf("\n");
         printGridLine(N);
     }
     dispEstadoNum(estado);
-    dispPosRobotRaton(estado->robCol, estado->robotY, estado->mouseX, estado->mouseY);
+    dispPosRobotRaton(estado->robCol, estado->robRow, estado->mouseCol, estado->mouseRow);
 }
 
 void dispEstadoNum(tEstado *estado) {
     int i, j;
     for(i=0; i<N; i++) {
         for(j=0; j<N; j++) {
-            printf("%d", estado->celdas[i][j]);
+            if(i==estado->robRow&&j==estado->robCol) {
+                printf("%d", ROBOT);
+            } else if(i==estado->mouseRow&& j==estado->mouseCol) {
+                printf("%d", RATON);
+            } else {
+                printf("%d", estado->celdas[i][j]);
+            }
         }
         printf("\n");
     }

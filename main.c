@@ -11,6 +11,5 @@ int main() {
         dispOperador(i);
         printf("Es valido: %d\n", esValido(i, inicial));
     }
-
     return 0;
 }

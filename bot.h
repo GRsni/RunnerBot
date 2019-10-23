@@ -4,12 +4,14 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 3
+#define N 4
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
 #define RATON 3
-
+#define ROBOTC 254
+#define RATONC -108
+#define PAREDC -78
 
 
 #ifndef _tEstado_

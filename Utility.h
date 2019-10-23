@@ -4,4 +4,4 @@
 void printGridLine(int cols);
 
 /*Imprime la celda bonita*/
-void printWall(char c);
+void printIcon(char c);
