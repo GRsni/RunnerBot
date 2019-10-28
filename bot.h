@@ -4,7 +4,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 4
+#define N 3
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -23,25 +23,25 @@ typedef struct {
 
 #endif
 
-static int mapa_inicial2[2][2]= {
+static int mapa_inicial2[2][2] = {
     {ROBOT, VACIO},
     {VACIO, RATON}
 };
 
-static int mapa_inicial3[3][3]= {
-    {RATON,VACIO,PARED},
-    {PARED,VACIO,VACIO},
-    {ROBOT,VACIO,VACIO}
+static int mapa_inicial3[3][3] = {
+    {VACIO, ROBOT, PARED},
+    {VACIO, VACIO, VACIO},
+    {VACIO, VACIO, RATON}
 };
 
-static int mapa_inicial4[4][4]= {
-    {VACIO, VACIO, VACIO, ROBOT},
+static int mapa_inicial4[4][4] = {
+    {VACIO, VACIO, VACIO, VACIO},
     {VACIO, RATON, PARED, PARED},
-    {PARED, VACIO, VACIO, VACIO},
-    {VACIO, VACIO, PARED, PARED}
+    {PARED, VACIO, ROBOT, VACIO},
+    {VACIO, VACIO, PARED, VACIO}
 };
 
-static int mapa_inicial5[5][5]= {
+static int mapa_inicial5[5][5] = {
     {VACIO, PARED, VACIO, VACIO, PARED},
     {VACIO, VACIO, PARED, PARED, VACIO},
     {PARED, VACIO, RATON, VACIO, VACIO},
@@ -105,6 +105,15 @@ int compruebaDerecha(tEstado *estado);
 /* Aplica un operador a una configuración concreta del puzle.
   Devuelve la nueva configuración del tablero tras el movimiento. */
 tEstado *aplicaOperador(unsigned op, tEstado *estado);
+
+/*Modifica la posicion del raton segun el operador escogido*/
+void mueveRaton(tEstado *estado, int direccion);
+
+/*Funcion auxiliar, desplaza el raton hacia abajo derecha*/
+void mueveRatonAbajoDerecha(tEstado *estado);
+
+/*Funcion auxiliar, desplaza el raton hacia arriba izquierda*/
+void mueveRatonArribaIzquierda(tEstado *estado);
 
 /* Devuelve 1 si un estado es igual al estado objetivo. */
 int testObjetivo(tEstado *estado);
