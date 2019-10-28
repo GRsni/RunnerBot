@@ -81,7 +81,7 @@ void dispEstado(tEstado *estado);
 void dispEstadoNum(tEstado *estado);
 
 /*Muestra la posicion del raton y del robot*/
-void dispPosRobotRaton(int rx, int ry, int mx, int my);
+void dispPosRobotRaton(tEstado *estado);
 
 /* Muestra el nombre de cada operador: Arriba, Abajo, Izquierda, Derecha. */
 void dispOperador(unsigned op);
