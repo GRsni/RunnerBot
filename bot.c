@@ -78,7 +78,7 @@ tEstado *crearEstado(int celdas[N][N]) {
 }
 
 tEstado* introducirEstado() {
-    int i, j, rX, rY;
+    int i, j, row, col;
     int celdas[N][N];
 
     for(i = 0; i < N; i++) {
@@ -90,20 +90,19 @@ tEstado* introducirEstado() {
         }
     }
     do {
-        printf("Introduce la fila del raton: ");
-        scanf("%d", &rY);
-        printf("Introduce la columna del raton: ");
-        scanf("%d", &rX);
-    } while(rX < 0 || rX > N - 1 || rY < 0 || rY > N - 1);
-    celdas[rY][rX] = RATON;
+        printf("Introduce la casilla del raton(en la diagonal principal)[0-%d]: ", N - 1);
+        scanf("%d", &row);
+    } while(row < 0 || row > N - 1);
+    celdas[row][row] = RATON;
 
     do {
-        printf("Introduce la fila del robot: ");
-        scanf("%d", &rY);
-        printf("Introduce la columna del robot: ");
-        scanf("%d", &rX);
-    } while(rX < 0 || rX > N - 1 || rY < 0 || rY > N - 1);
-    celdas[rY][rX] = ROBOT;
+        printf("Introduce la fila del robot[0-%d]: ", N - 1);
+        scanf("%d", &row);
+        printf("Introduce la columna del robot[0-%d]: ", N - 1);
+        scanf("%d", &col);
+        printf("\n");
+    } while(row < 0 || row > N - 1 || col < 0 || col > N - 1 || celdas[row][col] != VACIO);
+    celdas[row][col] = ROBOT;
 
     for(i = 0; i < N; i++) {
         for(j = 0; j < N; j++) {
@@ -141,25 +140,25 @@ int esValido(unsigned op, tEstado *estado) {
 
 int compruebaArriba(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
-    printf("%d, %d, %d\n", rRow == 0, estado->celdas[rRow - 1][rCol] == PARED, rCol == mCol - 1 && rRow == mRow);
+//    printf("%d, %d, %d\n", rRow == 0, estado->celdas[rRow - 1][rCol] == PARED, rCol == mCol - 1 && rRow == mRow);
     return !(rRow == 0 || estado->celdas[rRow - 1][rCol] == PARED || (rCol == mCol - 1 && rRow == mRow));
 }
 
 int compruebaAbajo(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
-    printf("%d, %d, %d\n", rRow == N - 1, estado->celdas[rRow + 1][rCol] == PARED, rCol == mCol - 1 && rRow == mRow - 2);
+//    printf("%d, %d, %d\n", rRow == N - 1, estado->celdas[rRow + 1][rCol] == PARED, rCol == mCol - 1 && rRow == mRow - 2);
     return !(rRow == N - 1 || estado->celdas[rRow + 1][rCol] == PARED || (rCol == mCol - 1 && rRow == mRow - 2));
 }
 
 int compruebaIzquierda(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
-    printf("%d, %d, %d\n", rCol == 0, estado->celdas[rRow][rCol - 1] == PARED, rCol == mCol + 2 && rRow == mRow + 1);
+//    printf("%d, %d, %d\n", rCol == 0, estado->celdas[rRow][rCol - 1] == PARED, rCol == mCol + 2 && rRow == mRow + 1);
     return !(rCol == 0 || estado->celdas[rRow][rCol - 1] == PARED || (rCol == mCol + 2 && rRow == mRow + 1));
 }
 
 int compruebaDerecha(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
-    printf("%d, %d, %d\n", rCol == N - 1, estado->celdas[rRow][rCol + 1] == PARED, rCol == mCol && rRow == mRow + 1);
+//    printf("%d, %d, %d\n", rCol == N - 1, estado->celdas[rRow][rCol + 1] == PARED, rCol == mCol && rRow == mRow + 1);
     return !(rCol == N - 1 || estado->celdas[rRow][rCol + 1] == PARED || (rCol == mCol && rRow == mRow + 1));
 }
 
@@ -170,58 +169,49 @@ tEstado *aplicaOperador(unsigned op, tEstado *estado) {
     switch(op) {
     case ARRIBA:
         nuevo->robRow--;
-        if(nuevo->mouseCol != N - 1) { //if mouse is in lower right corner, it wont move again
-            if(nuevo->mouseCol > 0) {//check if mouse would go out of the grid
-                mueveRatonArribaIzquierda(nuevo);
-            }
-        }
         break;
     case ABAJO:
         nuevo->robRow++;
-        if(nuevo->mouseCol != N - 1) { //if mouse is in lower right corner, it wont move again
-            if(nuevo->mouseCol > 0) {//check if mouse goes out of the grid
-                mueveRatonArribaIzquierda(nuevo);
-            }
-        }
         break;
 
     case IZQUIERDA:
         nuevo->robCol--;
-        if(nuevo->mouseCol != N - 1) { //if mouse is in lower right corner, it wont move again
-            if(nuevo->mouseCol > 0) { //check if mouse would go out of the grid
-                nuevo->mouseCol--;
-                nuevo->mouseRow--;
-            }
-        }
         break;
     case DERECHA:
         nuevo->robCol++;
-        if(nuevo->mouseCol != N - 1) { //if mouse is in lower right corner, it wont move again
-            if(nuevo->mouseCol > 0) {
-                nuevo->mouseCol--;
-                nuevo->mouseRow--;
-            }
-        }
         break;
     }
+    if(op == ARRIBA || op == ABAJO) {
+        mueveRaton(nuevo, ARRIBA);
+    } else if(op == IZQUIERDA || op == DERECHA) {
+        mueveRaton(nuevo, ABAJO);
+    }
+    dispEstado(nuevo);
+    return nuevo;
 }
 
 void mueveRaton(tEstado *estado, int direccion) {
-    if(estado->mouseCol != N - 1) {
+    if(estado->mouseCol != N - 1) { //mouse wont move if at lower right corner
         if(direccion == ARRIBA) {
-
+            mueveRatonArribaIzquierda(estado);
+        } else if(direccion == ABAJO) {
+            mueveRatonAbajoDerecha(estado);
         }
     }
 }
 
 void mueveRatonAbajoDerecha(tEstado *estado) {
-    estado->mouseCol--;
-    estado->mouseRow--;
+    if(estado->mouseCol < N - 1) {
+        estado->mouseCol++;
+        estado->mouseRow++;
+    }
 }
 
 void mueveRatonArribaIzquierda(tEstado *estado) {
-    estado->mouseCol++;
-    estado->mouseRow++;
+    if(estado->mouseCol > 0) {
+        estado->mouseCol--;
+        estado->mouseRow--;
+    }
 }
 
 void dispEstado(tEstado *estado) {
@@ -232,7 +222,7 @@ void dispEstado(tEstado *estado) {
         printf("|");
         for(col = 0; col < N; col++) {
             char c = ' ';
-            if(row == estado->robRow & col == estado->robCol) {
+            if(row == estado->robRow && col == estado->robCol) {
                 c = ROBOTC;
             } else if(row == estado->mouseRow && col == estado->mouseCol) {
                 c = RATONC;
@@ -244,7 +234,7 @@ void dispEstado(tEstado *estado) {
         printf("\n");
         printGridLine(N);
     }
-    dispEstadoNum(estado);
+//    dispEstadoNum(estado);
     dispPosRobotRaton(estado);
 }
 
@@ -279,4 +269,8 @@ void dispOperador(unsigned op) {
         printf("Movimiento DERECHA\n");
         break;
     }
+}
+
+int testObjetivo(tEstado *estado) {
+    return estado->robCol == N - 1 && estado->robRow == N - 1;
 }

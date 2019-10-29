@@ -4,7 +4,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 3
+#define N 4
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -21,27 +21,27 @@ typedef struct {
     int robCol, robRow, mouseCol, mouseRow;
 } tEstado;
 
-#endif
+#endif //_tEstado_
 
-static int mapa_inicial2[2][2] = {
+const static int mapa_inicial2[2][2] = {
     {ROBOT, VACIO},
     {VACIO, RATON}
 };
 
-static int mapa_inicial3[3][3] = {
+const static int mapa_inicial3[3][3] = {
     {VACIO, ROBOT, PARED},
     {VACIO, VACIO, VACIO},
     {VACIO, VACIO, RATON}
 };
 
-static int mapa_inicial4[4][4] = {
+const static int mapa_inicial4[4][4] = {
     {VACIO, VACIO, VACIO, VACIO},
-    {VACIO, RATON, PARED, PARED},
-    {PARED, VACIO, ROBOT, VACIO},
-    {VACIO, VACIO, PARED, VACIO}
+    {VACIO, RATON, VACIO, VACIO},
+    {PARED, VACIO, VACIO, ROBOT},
+    {VACIO, VACIO, VACIO, VACIO}
 };
 
-static int mapa_inicial5[5][5] = {
+const static int mapa_inicial5[5][5] = {
     {VACIO, PARED, VACIO, VACIO, PARED},
     {VACIO, VACIO, PARED, PARED, VACIO},
     {PARED, VACIO, RATON, VACIO, VACIO},
@@ -115,5 +115,5 @@ void mueveRatonAbajoDerecha(tEstado *estado);
 /*Funcion auxiliar, desplaza el raton hacia arriba izquierda*/
 void mueveRatonArribaIzquierda(tEstado *estado);
 
-/* Devuelve 1 si un estado es igual al estado objetivo. */
+/* Devuelve 1 si es un estado solución, 0 en otro caso */
 int testObjetivo(tEstado *estado);
