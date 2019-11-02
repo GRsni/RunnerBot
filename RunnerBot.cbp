@@ -39,9 +39,18 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="bot.h" />
+		<Unit filename="busquedaAlum.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="busquedaAlum.h" />
+		<Unit filename="listaia.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="listaia.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="nodo.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

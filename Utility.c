@@ -8,14 +8,14 @@
 void printGridLine(int cols) {
     int i;
     printf("+");
-    for(i=0; i<cols; i++) {
+    for(i = 0; i < cols; i++) {
         printf("---+");
     }
     printf("\n");
 }
 
 void printIcon(char c) {
-    if(c==PAREDC) {
+    if(c == PAREDC) {
         printf("%c%c%c|", c, c, c);
     } else {
         printf(" %c |", c);

@@ -20,38 +20,22 @@ tEstado* eligeEstado(int opcion) {
     tEstado* estado;
     switch(opcion) {
     case 2:
-        estado = estadoInicial2();
+        estado = crearEstado(mapa_inicial2);
         break;
     case 3:
-        estado = estadoInicial3();
+        estado = crearEstado(mapa_inicial3);
         break;
     case 4:
-        estado = estadoInicial4();
+        estado = crearEstado(mapa_inicial4);
         break;
     case 5:
-        estado = estadoInicial5();
+        estado = crearEstado(mapa_inicial5);
         break;
     default:
         estado = introducirEstado();
         break;
     }
     return estado;
-}
-
-tEstado* estadoInicial2() {
-    return crearEstado(mapa_inicial2);
-}
-
-tEstado* estadoInicial3() {
-    return crearEstado(mapa_inicial3);
-}
-
-tEstado* estadoInicial4() {
-    return crearEstado(mapa_inicial4);
-}
-
-tEstado* estadoInicial5() {
-    return crearEstado(mapa_inicial5);
 }
 
 tEstado *crearEstado(int celdas[N][N]) {
@@ -61,12 +45,10 @@ tEstado *crearEstado(int celdas[N][N]) {
         for(col = 0; col < N; col++) {
             int valor = celdas[row][col];
             if(celdas[row][col] == ROBOT) {
-                printf("Robot\n");
                 estado->robRow = row;
                 estado->robCol = col;
                 valor = VACIO;
             } else if(celdas[row][col] == RATON) {
-                printf("raton\n");
                 estado->mouseRow = row;
                 estado->mouseCol = col;
                 valor = VACIO;
@@ -272,5 +254,30 @@ void dispOperador(unsigned op) {
 }
 
 int testObjetivo(tEstado *estado) {
-    return estado->robCol == N - 1 && estado->robRow == N - 1;
+    int valido = 0;
+    if(estado->robCol == N - 1 && estado->robRow == N - 1) {
+        valido = 1;
+    } else if(estado->mouseCol == N - 1 && estado->mouseRow == N - 1) {
+        valido = -1;
+    }
+    return valido;
+}
+
+int iguales(tEstado *a, tEstado *b) {
+    int iguales = 1, i, j;
+    if (a->mouseCol != b->mouseCol || a->mouseRow != b->mouseRow || a->robCol != b->robCol || a->robRow != b->robRow) {
+            iguales = 0;
+    } else {
+        while(iguales == 1 && i < N) {
+            while(iguales == 1 && j < N) {
+                if(a->celdas[i][j] != b->celdas[i][j]) {
+                    iguales = 0;
+                }
+                j++;
+            }
+            j = 0;
+            i++;
+        }
+    }
+    return iguales;
 }

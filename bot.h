@@ -4,7 +4,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 4
+#define N 3
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -24,14 +24,14 @@ typedef struct {
 #endif //_tEstado_
 
 const static int mapa_inicial2[2][2] = {
-    {ROBOT, VACIO},
-    {VACIO, RATON}
+    {RATON, ROBOT},
+    {VACIO, VACIO}
 };
 
 const static int mapa_inicial3[3][3] = {
     {VACIO, ROBOT, PARED},
-    {VACIO, VACIO, VACIO},
-    {VACIO, VACIO, RATON}
+    {VACIO, RATON, VACIO},
+    {VACIO, VACIO, VACIO}
 };
 
 const static int mapa_inicial4[4][4] = {
@@ -56,15 +56,6 @@ tEstado* crearEstado(int celdas[N][N]);
 
 /*Crea el estado inicial a partir de entrada por teclado. Pide los datos de las paredes, y posicion del raton y robot*/
 tEstado* introducirEstado();
-
-/* Genera el estado inicial a partir de crearEstado y puzle_inicial. */
-tEstado* estadoInicial2();
-
-tEstado* estadoInicial3();
-
-tEstado* estadoInicial4();
-
-tEstado* estadoInicial5();
 
 /*Crea el estado con el tamaño correcto segun en valor de la constante N*/
 tEstado* eligeEstado();
@@ -115,5 +106,8 @@ void mueveRatonAbajoDerecha(tEstado *estado);
 /*Funcion auxiliar, desplaza el raton hacia arriba izquierda*/
 void mueveRatonArribaIzquierda(tEstado *estado);
 
-/* Devuelve 1 si es un estado solución, 0 en otro caso */
+/* Devuelve 1 si el robot ha llegado, -1 si el raton ha llegado, y  0 en otro caso */
 int testObjetivo(tEstado *estado);
+
+/*Devuelve 1 si el estado a es igual al estado b, devuelve 0 en otro caso*/
+int iguales(tEstado *a, tEstado *b);
