@@ -54,28 +54,8 @@ const static int mapa_inicial5[5][5] = {
   de acuerdo al tipo de datos tEstado. */
 tEstado* crearEstado(int celdas[N][N]);
 
-/*Crea el estado inicial a partir de entrada por teclado. Pide los datos de las paredes, y posicion del raton y robot*/
-tEstado* introducirEstado();
-
-/*Crea el estado con el tamaño correcto segun en valor de la constante N*/
-tEstado* eligeEstado();
-
-tEstado* eligeOpcionCrearEstado();
-
 /* Devuelve el coste de aplicar el operador. */
 int coste(unsigned op, tEstado *estado);
-
-/* Muestra el contenido del puzle. */
-void dispEstado(tEstado *estado);
-
-/*Muestra la matriz de estado de forma numerica*/
-void dispEstadoNum(tEstado *estado);
-
-/*Muestra la posicion del raton y del robot*/
-void dispPosRobotRaton(tEstado *estado);
-
-/* Muestra el nombre de cada operador: Arriba, Abajo, Izquierda, Derecha. */
-void dispOperador(unsigned op);
 
 /* Comprueba si es posible aplicar un operador a una configuración determinada para el puzle.
   Devuelve 1 si el movimiento es válido y 0 en otro caso. */
