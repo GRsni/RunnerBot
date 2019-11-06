@@ -11,10 +11,9 @@
 #define PARED 1
 #define ROBOT 2
 #define RATON 3
-#define ROBOTC 254
-#define RATONC -108
-#define PAREDC -78
 
+#ifndef MAPA_INICIAL
+#define MAPA_INICIAL
 #if N==2
 static int mapa_inicial[N][N] = {
     {RATON, ROBOT},
@@ -43,6 +42,7 @@ static int mapa_inicial[N][N] = {
 };
 
 #endif // N
+#endif // MAPA_INICIAL
 
 #endif // CONSTANTES
 
@@ -54,6 +54,21 @@ typedef struct {
 } tEstado;
 
 #endif //_tEstado_
+
+/*Crea el estado inicial a partir de entrada por teclado. Pide los datos de las paredes, y posicion del raton y robot*/
+tEstado* introducirEstado();
+
+/*Crea el estado te tamaño correcto de manera aleatoria*/
+tEstado* creaEstadoAleatorio();
+
+/*Situa el robot en una posicion aleatorioa del mapa*/
+void eligePosRobotAleatoria(int tam, int celdas[tam][tam]);
+
+/*Situa al raton en una posicion aleatoria del mapa*/
+void eligePosRatonAleatoria(int tam, int celdas[tam][tam]);
+
+/*Coloca las paredes de manera aleatoria en el mapa*/
+void colocaParedesAleatorias(int tam, int celdas[tam][tam]);
 
 /* A partir de una configuración de fichas construye un estado válido para el problema
   de acuerdo al tipo de datos tEstado. */

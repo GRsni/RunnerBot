@@ -4,133 +4,124 @@
 
 #include "menu.h"
 #include "utility.h"
+#include "busquedaAlum.h"
+#include "bot.h"
+
+extern tEstado *inicial;
 
 void menuPrincipal() {
-    int continua = 1, tipoBusqueda = 0;
-    tEstado *inicial = (tEstado* )malloc(sizeof(tEstado));
+    int continua = 1;
     printf("Bienvenido al programa RunnerBot.\nDesarrollado por Santiago Jesus Mas.\n\n");
 
-    inicial=menuSeleccionEstado();
+    inicial = menuSeleccionEstado();
     dispEstado(inicial);
-//    do {
-//
-//    } while(continua = 1);
+
+    do {
+    menuBusqueda();
+    } while(continua = 1);
 }
 
 tEstado *menuSeleccionEstado() {
     int selector = 0;
     printf("Elige como quieres obtener el estado inicial:\n");
-    printf("[1]Introduce el estado por teclado.\n[2]Elige un estado aleatorio.\n[3]Elige un estado ya implementado.\n->");
-    scanf("%d", &selector);
+    printf("[1]Introduce el estado por teclado.\n[2]Elige un estado aleatorio.\n[3]Elige un estado ya implementado.\n");
+    do {
+        printf("->");
+        scanf("%d", &selector);
+        if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
+            imprimeSelectorFueraDeRango();
+        }
+    } while(selector < 1 || selector > 3);
     return eligeModoCrearEstado(selector);
-}
-
-void menuBusqueda(tEstado *estado) {
-
 }
 
 tEstado* eligeModoCrearEstado(int selector) {
     if(selector == 1) {
         return introducirEstado();
     } else if(selector == 2) {
-        return eligeEstadoAleatorio();
+        return creaEstadoAleatorio();
     } else {
         return crearEstado(mapa_inicial);
     }
 }
 
-tEstado* introducirEstado() {
-    int i, j, row, col;
-    int celdas[N][N];
-
-    for(i = 0; i < N; i++) {
-        for(j = 0; j < N; j++) {
-            do {
-                printf("Elige que hay en la celda[%d, %d]:\nVACIO[0]|PARED[1]: ", i, j);
-                scanf("%d", &celdas[i][j]);
-            } while(celdas[i][j] < VACIO || celdas[i][j] > PARED);
+void menuBusqueda() {
+    int selector = 0, salida;
+    printf("Elige el algoritmo de busqueda que quieres emplear:\n");
+    printf("[1]Busqueda en anchura\n[2]Busqueda en profundidad.\n[3]Busqueda heuristica\n");
+    do {
+        printf("->");
+        scanf("%d", &selector);
+        if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
+            imprimeSelectorFueraDeRango();
         }
+    } while(selector < 1 || selector > 3);
+    eligeTipoDeBusqueda(selector);
+}
+
+void eligeTipoDeBusqueda(int selector) {
+    switch(selector) {
+    case 1:
+        printf("Realizando la busqueda a ciegas en anchura.\n");
+        busquedaACiegas(0);
+        break;
+    case 2:
+        menuBusquedaProfundidad();
+        break;
+    case 3:
+        menuBusquedaHeuristica();
+        break;
     }
-    do {
-        printf("Introduce la casilla del raton(en la diagonal principal)[0-%d]: ", N - 1);
-        scanf("%d", &row);
-    } while(row < 0 || row > N - 1);
-    celdas[row][row] = RATON;
+}
 
+void menuBusquedaProfundidad() {
+    int selector = 0;
+    printf("Elige el tipo de busqueda en profundidad a realizar:\n");
+    printf("[1]Profundidad a ciegas.\n[2]Profundidad limitada.\n[3]Profundidad iterativa.\n");
     do {
-        printf("Introduce la fila del robot[0-%d]: ", N - 1);
-        scanf("%d", &row);
-        printf("Introduce la columna del robot[0-%d]: ", N - 1);
-        scanf("%d", &col);
-        printf("\n");
-        imprimeErrorPosRobot(row, col, celdas);
-    } while(row < 0 || row > N - 1 || col < 0 || col > N - 1 || celdas[row][col] != VACIO);
-    celdas[row][col] = ROBOT;
-
-    for(i = 0; i < N; i++) {
-        for(j = 0; j < N; j++) {
-            printf("%d", celdas[i][j]);
+        printf("->");
+        scanf("%d", &selector);
+        if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
+            imprimeSelectorFueraDeRango();
         }
-        printf("\n");
-    }
-    return crearEstado(celdas);
+    } while(selector < 1 || selector > 3);
 
 }
 
-tEstado* eligeEstadoAleatorio() {
-    int paredes = N - 1, i, col, row;
-    printf("Creando estado aleatorio[%dx%d] con %d pared%s", N, N, N - 1, (N == 2) ? ".\n" : "des.\n");
-
-    int celdas[N][N];
-    inicializaMatrizCero(N, celdas);
-
-    eligePosRatonAleatoria(N, celdas);
-//    imprimeMatriz(N, celdas);
-
-    eligePosRobotAleatoria(N, celdas);
-//    imprimeMatriz(N, celdas);
-
-    colocaParedesAleatorias(N, celdas);
-//    imprimeMatriz(N, celdas);
-
-    return crearEstado(celdas);
-}
-
-void eligePosRatonAleatoria(int tam, int celdas[tam][tam]) {
-    int pos;
-    do {
-        pos = rand() % N;
-    } while(celdas[pos][pos] == PARED || celdas[pos][pos] == ROBOT || pos == N - 1);
-    printf("Posicionando el raton en [%d, %d]\n", pos, pos);
-    celdas[pos][pos] = RATON;
-}
-
-void eligePosRobotAleatoria(int tam, int celdas[tam][tam]) {
-    int col, row;
-    do {
-        row = rand() % N;
-        col = rand() % N;
-    } while(celdas[row][col] == PARED || celdas[row][col] == RATON || (row == N - 1 && col == N - 1));
-    printf("Posicionando el robot en [%d, %d]\n", row, col);
-    celdas[row][col] = ROBOT;
-}
-
-void colocaParedesAleatorias(int tam, int celdas[tam][tam]) {
-    int i, col, row;
-    for(i = 0; i < tam - 1; i++) {
+void eligeBusquedaProfundidad(int selector) {
+    int iter = 0;
+    switch(selector) {
+    case 1:
+        printf("Realizando una busqueda en profundidad a ciegas.\n");
+        busquedaACiegas(1);
+        break;
+    case 2:
+        printf("Elige el limite de profundidad a expandir.\n");
         do {
-            col = rand() % N;
-            row = rand() % N;
-        } while((col == N - 1 && row == N - 1) || celdas[row][col] == PARED || celdas[row][col] == ROBOT || celdas[row][col] == RATON);
-        printf("Colocando muro en [%d, %d]\n", row, col);
-        celdas[row][col] = PARED;
+            printf("->");
+            scanf("%d", &iter);
+            if(compruebaSelectorFueraDeRango(iter, 1, 100000)) {
+                imprimeSelectorFueraDeRango();
+            }
+        } while(iter < 1);
+        printf("Realizando una busqueda en profundidad con limite %d.\n", iter);
+        busquedaProfundidadLimitada();
+        break;
+    case 3:
+        printf("Realizando busqueda en profundidad iterativa.\n");
+        break;
     }
+}
+
+
+void menuBusquedaHeuristica() {
+
 }
 
 void dispEstado(tEstado *estado) {
     int row, col;
     printf("Estado actual:\n");
-    printGridLine(N);
+    imprimeLineaMatriz(N);
     for(row = 0; row < N; row++) {
         printf("|");
         for(col = 0; col < N; col++) {
@@ -142,10 +133,10 @@ void dispEstado(tEstado *estado) {
             } else if (estado->celdas[row][col] == PARED) {
                 c = PAREDC;
             }
-            printIcon(c);
+            imprimeIcono(c);
         }
         printf("\n");
-        printGridLine(N);
+        imprimeLineaMatriz(N);
     }
 //    dispEstadoNum(estado);
     dispPosRobotRaton(estado);

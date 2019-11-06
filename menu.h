@@ -1,22 +1,10 @@
 #include "bot.h"
 
-/*Crea el estado con el tamaño correcto segun en valor de la constante N*/
-tEstado* eligeModoCrearEstado(int manual);
-
-/*Crea el estado inicial a partir de entrada por teclado. Pide los datos de las paredes, y posicion del raton y robot*/
-tEstado* introducirEstado();
-
-/*Crea el estado te tamaño correcto de manera aleatoria*/
-tEstado* eligeEstadoAleatorio();
-
-/*Situa el robot en una posicion aleatorioa del mapa*/
-void eligePosRobotAleatoria(int tam, int celdas[tam][tam]);
-
-/*Situa al raton en una posicion aleatoria del mapa*/
-void eligePosRatonAleatoria(int tam, int celdas[tam][tam]);
-
-/*Coloca las paredes de manera aleatoria en el mapa*/
-void colocaParedesAleatorias(int tam, int celdas[tam][tam]);
+/**
+* Selecciona el modo de creacion del estado inicial segun el selector
+* Devuelve el estado creado
+*/
+tEstado* eligeModoCrearEstado(int selector);
 
 /*Menu principal de programa*/
 void menuPrincipal();
@@ -26,6 +14,21 @@ tEstado* menuSeleccionEstado();
 
 /*Menu para la seleccion del algoritmo de busqueda*/
 void menuBusqueda();
+
+/*Selecciona el tipo de busqueda a realizar segun el selector*/
+void eligeTipoDeBusqueda();
+
+/*Menu para elegir las diferentes opciones de busqueda en profundidad*/
+void menuBusquedaProfundidad();
+
+/*Selecciona el tipo de busqueda en profundidad segun el selector*/
+void eligeBusquedaProfundidad(int selector);
+
+/*Menu para elegir las diferentes busquedas heuristicas*/
+void menuBusquedaHeuristica();
+
+/*Selecciona el tipo de busqueda heuristica segun el selector*/
+void eligeBusquedaHeuristica(int selector);
 
 /* Muestra el contenido del puzle. */
 void dispEstado(tEstado *estado);

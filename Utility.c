@@ -6,7 +6,7 @@
 #include "bot.h"
 #include "listaia.h"
 
-void printGridLine(int cols) {
+void imprimeLineaMatriz(int cols) {
     int i;
     printf("+");
     for(i = 0; i < cols; i++) {
@@ -15,7 +15,7 @@ void printGridLine(int cols) {
     printf("\n");
 }
 
-void printIcon(char c) {
+void imprimeIcono(char c) {
     if(c == PAREDC) {
         printf("%c%c%c|", c, c, c);
     } else {
@@ -46,4 +46,12 @@ void imprimeMatriz(int tam, int celdas[tam][tam]) {
         }
         printf("\n");
     }
+}
+
+int compruebaSelectorFueraDeRango(int selec, int inf, int sup) {
+    return selec < inf || selec > sup;
+}
+
+void imprimeSelectorFueraDeRango() {
+    printf("Selector no valido. Introduce otro valor.\n");
 }

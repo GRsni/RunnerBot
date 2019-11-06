@@ -5,6 +5,9 @@
 /* Grado en Ingenieria Informatica - UCA   */
 /*******************************************/
 
+#define ANCHURA 0
+#define PROFUNDIDAD 1
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,6 +18,7 @@
 #include "busquedaAlum.h"
 #include "menu.h"
 
+extern tEstado *inicial;
 
 void dispCamino(tNodo *nodo) {
     if (nodo->padre == NULL) {
@@ -37,16 +41,17 @@ void dispSolucion(tNodo *nodo) {
 
 
 /* Crea el nodo raíz. */
-tNodo *nodoInicial(tEstado *estadoIn) {
-    tNodo *inicial = (tNodo *) malloc(sizeof(tNodo));
+tNodo *nodoInicial() {
+    tNodo *nodoInicial = (tNodo *) malloc(sizeof(tNodo));
 
-    inicial->estado = estadoIn;
-    inicial->padre = NULL;
-    inicial->costeCamino = 0;
-    inicial->profundidad = 0;
-    inicial->valHeuristica = distObjetivo(inicial->estado);//heuristica distancia robot
+    dispEstado(inicial);
+    nodoInicial->estado = inicial;
+    nodoInicial->padre = NULL;
+    nodoInicial->costeCamino = 0;
+    nodoInicial->profundidad = 0;
+    nodoInicial->valHeuristica = distObjetivo(inicial);//heuristica distancia robot
 //    inicial->valHeuristica = distObjetivo(inicial->estado) + distRaton(inicial->estado); //heuristica distancia robot + raton
-    return inicial;
+    return nodoInicial;
 }
 
 
@@ -60,8 +65,6 @@ Lista expandir(tNodo *nodo) {
             tNodo *nuevo = (tNodo *) malloc(sizeof(tNodo));
             tEstado *s = (tEstado *) malloc(sizeof(tEstado));
             s = aplicaOperador(op, nodo->estado);
-//            printf("Sucesor %d\n", op);
-//            dispEstado(s);
             nuevo = (tNodo *) malloc(sizeof(tNodo));
             nuevo->estado = s;
             nuevo->padre = nodo;
@@ -71,21 +74,20 @@ Lista expandir(tNodo *nodo) {
             nuevo->profundidad = nodo->profundidad + 1;
             if (!ListaLlena(sucesores)) {
                 InsertarUltimo((void *) nuevo, sucesores);
-                //      dispEstado(nuevo->estado);
             }
         }
     }
-    //system("pause");
     return sucesores;
 }
 
 
-int busqueda(tEstado *estado) {
+int busquedaACiegas(int selector) {
     int objetivo = 0, contador = 0;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
-    tNodo *Inicial = nodoInicial(estado);
-//    dispCamino(Inicial);
+    tNodo *Inicial = nodoInicial();
+    dispCamino(Inicial);
+    dispEstado(Inicial->estado);
     //tEstado *Final=estadoObjetivo();
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
@@ -97,15 +99,16 @@ int busqueda(tEstado *estado) {
         contador++;
         Actual = (void *) ExtraerPrimero(Abiertos);
 
-//        printf("\n ACTUAL: \n");
-//        dispEstado(Actual->estado);
         EliminarPrimero(Abiertos);
         if(!esRepetido(Actual->estado, Cerrados)) {
             objetivo = testObjetivo(Actual->estado);
             if (objetivo == 0) {
                 Sucesores = expandir(Actual);
-                Abiertos = Concatenar(Sucesores, Abiertos); //Profundidad
-//                Abiertos = Concatenar(Abiertos, Sucesores); //Anchura
+                if(selector == PROFUNDIDAD) {
+                    Abiertos = Concatenar(Sucesores, Abiertos);
+                } else if(selector == ANCHURA) {
+                    Abiertos = Concatenar(Abiertos, Sucesores);
+                }
             }
             InsertarUltimo((void *)Actual, Cerrados);
         }
@@ -118,11 +121,13 @@ int busqueda(tEstado *estado) {
     return objetivo;
 }
 
-int busquedaHeuristica(tEstado *estado) {
+int busquedaProfundidadLimitada(){}
+
+int busquedaHeuristica() {
     int objetivo = 0, contador = 0;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
-    tNodo *Inicial = nodoInicial(estado);
+    tNodo *Inicial = nodoInicial();
 //    dispCamino(Inicial);
     //tEstado *Final=estadoObjetivo();
 

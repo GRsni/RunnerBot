@@ -8,8 +8,9 @@
 #include "listaia.h"
 #include "bot.h"
 
-int busqueda(tEstado *estado);
-int busquedaHeuristica(tEstado *estado);
+int busquedaACiegas(int selector);
+int busquedaProfundidadLimitada();
+int busquedaHeuristica();
 void OrdenarGreedy(Lista C);
 void OrdenarAStar(Lista C);
 int esRepetido(tEstado *estado, Lista C);
