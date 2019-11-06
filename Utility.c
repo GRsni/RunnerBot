@@ -4,6 +4,7 @@
 
 #include "Utility.h"
 #include "bot.h"
+#include "listaia.h"
 
 void printGridLine(int cols) {
     int i;
@@ -19,5 +20,30 @@ void printIcon(char c) {
         printf("%c%c%c|", c, c, c);
     } else {
         printf(" %c |", c);
+    }
+}
+
+void imprimeErrorPosRobot(int row, int col, int celdas[N][N]) {
+    if(row < 0 || row > N - 1 || col < 0 || col > N - 1) {
+        ERROR("Posicion del robot fuera del mapa")
+    }
+}
+
+void inicializaMatrizCero(int tam, int celdas[tam][tam]) {
+    int i, j;
+    for(i = 0; i < tam; i++) {
+        for(j = 0; j < tam; j++) {
+            celdas[i][j] = 0;
+        }
+    }
+}
+
+void imprimeMatriz(int tam, int celdas[tam][tam]) {
+    int i, j;
+    for(i = 0; i < tam; i++) {
+        for(j = 0; j < tam; j++) {
+            printf("%d", celdas[i][j]);
+        }
+        printf("\n");
     }
 }

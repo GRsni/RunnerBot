@@ -2,5 +2,5 @@
 *.depend
 bin/
 obj/
-10Runnerbot.pdf
+*.pdf
 *.cscope_file_list

@@ -4,6 +4,7 @@
 
 #include "bot.h"
 #include "Utility.h"
+#include "menu.h"
 
 
 tEstado *crearEstado(int celdas[N][N]) {
@@ -33,7 +34,6 @@ int coste(unsigned op, tEstado *estado) {
 
 int esValido(unsigned op, tEstado *estado) {
     int valido;
-    //TODO: Solve problem with this shit
     switch(op) {
     case ARRIBA:
         valido = compruebaArriba(estado);

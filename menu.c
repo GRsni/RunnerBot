@@ -5,15 +5,38 @@
 #include "menu.h"
 #include "utility.h"
 
-tEstado* eligeOpcionCrearEstado() {
-    char eleccion;
-    int opcion = N;
-    printf("Quieres crear un estado desde cero o elegir uno de los existentes?[s]i/[n]o: ");
-    scanf("%c", &eleccion);
-    if(eleccion == 's') {
-        opcion = 0;
+void menuPrincipal() {
+    int continua = 1, tipoBusqueda = 0;
+    tEstado *inicial = (tEstado* )malloc(sizeof(tEstado));
+    printf("Bienvenido al programa RunnerBot.\nDesarrollado por Santiago Jesus Mas.\n\n");
+
+    inicial=menuSeleccionEstado();
+    dispEstado(inicial);
+//    do {
+//
+//    } while(continua = 1);
+}
+
+tEstado *menuSeleccionEstado() {
+    int selector = 0;
+    printf("Elige como quieres obtener el estado inicial:\n");
+    printf("[1]Introduce el estado por teclado.\n[2]Elige un estado aleatorio.\n[3]Elige un estado ya implementado.\n->");
+    scanf("%d", &selector);
+    return eligeModoCrearEstado(selector);
+}
+
+void menuBusqueda(tEstado *estado) {
+
+}
+
+tEstado* eligeModoCrearEstado(int selector) {
+    if(selector == 1) {
+        return introducirEstado();
+    } else if(selector == 2) {
+        return eligeEstadoAleatorio();
+    } else {
+        return crearEstado(mapa_inicial);
     }
-    return eligeEstado(opcion);
 }
 
 tEstado* introducirEstado() {
@@ -40,6 +63,7 @@ tEstado* introducirEstado() {
         printf("Introduce la columna del robot[0-%d]: ", N - 1);
         scanf("%d", &col);
         printf("\n");
+        imprimeErrorPosRobot(row, col, celdas);
     } while(row < 0 || row > N - 1 || col < 0 || col > N - 1 || celdas[row][col] != VACIO);
     celdas[row][col] = ROBOT;
 
@@ -53,26 +77,54 @@ tEstado* introducirEstado() {
 
 }
 
-tEstado* eligeEstado(int opcion) {
-    tEstado* estado;
-    switch(opcion) {
-    case 2:
-        estado = crearEstado(mapa_inicial2);
-        break;
-    case 3:
-        estado = crearEstado(mapa_inicial3);
-        break;
-    case 4:
-        estado = crearEstado(mapa_inicial4);
-        break;
-    case 5:
-        estado = crearEstado(mapa_inicial5);
-        break;
-    default:
-        estado = introducirEstado();
-        break;
+tEstado* eligeEstadoAleatorio() {
+    int paredes = N - 1, i, col, row;
+    printf("Creando estado aleatorio[%dx%d] con %d pared%s", N, N, N - 1, (N == 2) ? ".\n" : "des.\n");
+
+    int celdas[N][N];
+    inicializaMatrizCero(N, celdas);
+
+    eligePosRatonAleatoria(N, celdas);
+//    imprimeMatriz(N, celdas);
+
+    eligePosRobotAleatoria(N, celdas);
+//    imprimeMatriz(N, celdas);
+
+    colocaParedesAleatorias(N, celdas);
+//    imprimeMatriz(N, celdas);
+
+    return crearEstado(celdas);
+}
+
+void eligePosRatonAleatoria(int tam, int celdas[tam][tam]) {
+    int pos;
+    do {
+        pos = rand() % N;
+    } while(celdas[pos][pos] == PARED || celdas[pos][pos] == ROBOT || pos == N - 1);
+    printf("Posicionando el raton en [%d, %d]\n", pos, pos);
+    celdas[pos][pos] = RATON;
+}
+
+void eligePosRobotAleatoria(int tam, int celdas[tam][tam]) {
+    int col, row;
+    do {
+        row = rand() % N;
+        col = rand() % N;
+    } while(celdas[row][col] == PARED || celdas[row][col] == RATON || (row == N - 1 && col == N - 1));
+    printf("Posicionando el robot en [%d, %d]\n", row, col);
+    celdas[row][col] = ROBOT;
+}
+
+void colocaParedesAleatorias(int tam, int celdas[tam][tam]) {
+    int i, col, row;
+    for(i = 0; i < tam - 1; i++) {
+        do {
+            col = rand() % N;
+            row = rand() % N;
+        } while((col == N - 1 && row == N - 1) || celdas[row][col] == PARED || celdas[row][col] == ROBOT || celdas[row][col] == RATON);
+        printf("Colocando muro en [%d, %d]\n", row, col);
+        celdas[row][col] = PARED;
     }
-    return estado;
 }
 
 void dispEstado(tEstado *estado) {
@@ -100,13 +152,7 @@ void dispEstado(tEstado *estado) {
 }
 
 void dispEstadoNum(tEstado *estado) {
-    int row, col;
-    for(row = 0; row < N; row++) {
-        for(col = 0; col < N; col++) {
-            printf("%d", estado->celdas[row][col]);
-        }
-        printf("\n");
-    }
+    imprimeMatriz(N, estado->celdas);
 }
 
 void dispPosRobotRaton(tEstado *estado) {

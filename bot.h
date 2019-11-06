@@ -1,10 +1,12 @@
+#ifndef CONSTANTES
+#define CONSTANTES
 
 #define ARRIBA 1
 #define ABAJO 2
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 3
+#define N 5
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -13,6 +15,36 @@
 #define RATONC -108
 #define PAREDC -78
 
+#if N==2
+static int mapa_inicial[N][N] = {
+    {RATON, ROBOT},
+    {VACIO, VACIO}
+};
+#elif N==3
+static int mapa_inicial[N][N] = {
+    {VACIO, ROBOT, PARED},
+    {VACIO, RATON, VACIO},
+    {VACIO, VACIO, VACIO}
+};
+#elif N==4
+static int mapa_inicial[N][N] = {
+    {VACIO, VACIO, VACIO, VACIO},
+    {VACIO, RATON, VACIO, VACIO},
+    {PARED, VACIO, VACIO, ROBOT},
+    {VACIO, VACIO, VACIO, VACIO}
+};
+#elif N==5
+static int mapa_inicial[N][N] = {
+    {VACIO, PARED, VACIO, VACIO, PARED},
+    {VACIO, VACIO, PARED, PARED, VACIO},
+    {PARED, VACIO, RATON, VACIO, VACIO},
+    {VACIO, ROBOT, PARED, PARED, VACIO},
+    {VACIO, VACIO, VACIO, VACIO, VACIO}
+};
+
+#endif // N
+
+#endif // CONSTANTES
 
 #ifndef _tEstado_
 #define _tEstado_
@@ -22,33 +54,6 @@ typedef struct {
 } tEstado;
 
 #endif //_tEstado_
-
-const static int mapa_inicial2[2][2] = {
-    {RATON, ROBOT},
-    {VACIO, VACIO}
-};
-
-const static int mapa_inicial3[3][3] = {
-    {VACIO, ROBOT, PARED},
-    {VACIO, RATON, VACIO},
-    {VACIO, VACIO, VACIO}
-};
-
-const static int mapa_inicial4[4][4] = {
-    {VACIO, VACIO, VACIO, VACIO},
-    {VACIO, RATON, VACIO, VACIO},
-    {PARED, VACIO, VACIO, ROBOT},
-    {VACIO, VACIO, VACIO, VACIO}
-};
-
-const static int mapa_inicial5[5][5] = {
-    {VACIO, PARED, VACIO, VACIO, PARED},
-    {VACIO, VACIO, PARED, PARED, VACIO},
-    {PARED, VACIO, RATON, VACIO, VACIO},
-    {VACIO, ROBOT, PARED, PARED, VACIO},
-    {VACIO, VACIO, VACIO, VACIO, VACIO}
-};
-
 
 /* A partir de una configuración de fichas construye un estado válido para el problema
   de acuerdo al tipo de datos tEstado. */

@@ -13,6 +13,7 @@
 #include "nodo.h"
 #include "listaia.h"
 #include "busquedaAlum.h"
+#include "menu.h"
 
 
 void dispCamino(tNodo *nodo) {
@@ -36,14 +37,15 @@ void dispSolucion(tNodo *nodo) {
 
 
 /* Crea el nodo raíz. */
-tNodo *nodoInicial() {
+tNodo *nodoInicial(tEstado *estadoIn) {
     tNodo *inicial = (tNodo *) malloc(sizeof(tNodo));
 
-    inicial->estado = eligeOpcionCrearEstado();
+    inicial->estado = estadoIn;
     inicial->padre = NULL;
     inicial->costeCamino = 0;
     inicial->profundidad = 0;
-    inicial->valHeuristica = distObjetivo(inicial->estado);
+    inicial->valHeuristica = distObjetivo(inicial->estado);//heuristica distancia robot
+//    inicial->valHeuristica = distObjetivo(inicial->estado) + distRaton(inicial->estado); //heuristica distancia robot + raton
     return inicial;
 }
 
@@ -78,11 +80,11 @@ Lista expandir(tNodo *nodo) {
 }
 
 
-int busqueda() {
+int busqueda(tEstado *estado) {
     int objetivo = 0, contador = 0;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
-    tNodo *Inicial = nodoInicial();
+    tNodo *Inicial = nodoInicial(estado);
 //    dispCamino(Inicial);
     //tEstado *Final=estadoObjetivo();
 
@@ -102,8 +104,8 @@ int busqueda() {
             objetivo = testObjetivo(Actual->estado);
             if (objetivo == 0) {
                 Sucesores = expandir(Actual);
-//                Abiertos = Concatenar(Sucesores, Abiertos); //Profundidad
-                Abiertos = Concatenar(Abiertos, Sucesores); //Anchura
+                Abiertos = Concatenar(Sucesores, Abiertos); //Profundidad
+//                Abiertos = Concatenar(Abiertos, Sucesores); //Anchura
             }
             InsertarUltimo((void *)Actual, Cerrados);
         }
@@ -116,11 +118,11 @@ int busqueda() {
     return objetivo;
 }
 
-int busquedaHeuristica() {
+int busquedaHeuristica(tEstado *estado) {
     int objetivo = 0, contador = 0;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
-    tNodo *Inicial = nodoInicial();
+    tNodo *Inicial = nodoInicial(estado);
 //    dispCamino(Inicial);
     //tEstado *Final=estadoObjetivo();
 
@@ -163,7 +165,7 @@ int esRepetido(tEstado *actual, Lista C) {
     int i = 0, repetido = 0;
 
     while(i < C->Nelem && !repetido) {
-        tNodo *nodo_cerrado = (void*)ExtraerElem(C, i);
+        tNodo *nodo_cerrado = (void *)ExtraerElem(C, i);
         if(iguales(nodo_cerrado->estado, actual)) {
             repetido = 1;
         }
@@ -178,6 +180,10 @@ int distObjetivo(tEstado *estado) {
     return distX + distY;
 }
 
+int distRaton(tEstado *estado) {
+    return estado->mouseCol + estado->mouseRow;
+}
+
 void OrdenarGreedy(Lista C) {
     int i, ordenado, tam = C->Nelem;
     do {
@@ -186,7 +192,7 @@ void OrdenarGreedy(Lista C) {
             tNodo *nodo_i = (void *)ExtraerElem(C, i);
             tNodo *nodo_next = (void *)ExtraerElem(C, i + 1);
             printf("Coste i: %d, Coste next: %d\n", nodo_i->costeCamino, nodo_next->costeCamino);
-            if(nodo_i->costeCamino > nodo_next->costeCamino) {
+            if(nodo_i->costeCamino < nodo_next->costeCamino) {
                 ordenado = 0;
                 tElemento *a = C->elementos[i];
                 tElemento *b = C->elementos[i + 1];

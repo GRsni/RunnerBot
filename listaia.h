@@ -8,7 +8,7 @@
 /**************************************************************/
 
 
-#define MAXI 10
+#define MAXI 3000
 
 
 
@@ -17,7 +17,12 @@
 typedef void *tElemento;
 #endif
 
+#ifndef ERROR_MESSAGE
+#define ERROR_MESSAGE
+
 #define ERROR(s) printf("%s\n", s);
+
+#endif // ERROR_MESSAGE
 
 
 #ifndef _LISTAIA_H_
@@ -36,11 +41,11 @@ int ListaVacia (Lista C);
 int ListaLlena(Lista C);
 
 //Pre: Lista C no está llena
-//Post:Devuelve el elemento primero de la lista
+//Post:Inserta el elemento al principio de la lista
 void InsertarPrimero(tElemento *x, Lista C);
 
 //Pre: Lista C no está llena
-//Post:Devuelve el ultimo elemento de la lista
+//Post:Inserta el elemento al final de la lista
 void InsertarUltimo(tElemento *x, Lista C);
 
 //Pre: -
