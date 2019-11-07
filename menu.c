@@ -95,7 +95,7 @@ void menuBusquedaProfundidad() {
             imprimeSelectorFueraDeRango();
         }
     } while(selector < 1 || selector > 3);
-
+    eligeBusquedaProfundidad(selector);
 }
 
 void eligeBusquedaProfundidad(int selector) {
@@ -116,7 +116,7 @@ void eligeBusquedaProfundidad(int selector) {
             }
         } while(iter < 1);
         printf("Realizando una busqueda en profundidad con limite %d.\n", iter);
-        busquedaProfundidadLimitada();
+        busquedaProfundidadLimitadaIterativa(0);
         break;
     case 3:
         printf("Realizando busqueda en profundidad iterativa.\n");

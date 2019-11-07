@@ -9,11 +9,15 @@
 
 tEstado *inicial;
 
-int main() {
+void inicializaPrograma() {
     srand(time(NULL));
-    inicial== (tEstado* )malloc(sizeof(tEstado));
+    inicial == (tEstado* )malloc(sizeof(tEstado));
+}
+
+int main() {
+    inicializaPrograma();
     menuPrincipal();
-//    busqueda();
-//    busquedaHeuristica();
     return 0;
 }
+
+

@@ -1,9 +1,7 @@
 #include "bot.h"
 
-/**
-* Selecciona el modo de creacion del estado inicial segun el selector
-* Devuelve el estado creado
-*/
+/*Selecciona el modo de creacion del estado inicial segun el selector
+    Devuelve el estado creado*/
 tEstado* eligeModoCrearEstado(int selector);
 
 /*Menu principal de programa*/

@@ -6,7 +6,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 5
+#define N 4
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
@@ -27,9 +27,9 @@ static int mapa_inicial[N][N] = {
 };
 #elif N==4
 static int mapa_inicial[N][N] = {
+    {VACIO, VACIO, ROBOT, PARED},
+    {VACIO, RATON, PARED, VACIO},
     {VACIO, VACIO, VACIO, VACIO},
-    {VACIO, RATON, VACIO, VACIO},
-    {PARED, VACIO, VACIO, ROBOT},
     {VACIO, VACIO, VACIO, VACIO}
 };
 #elif N==5

@@ -19,7 +19,7 @@ extern tEstado *inicial;
 
 void dispCamino(tNodo *nodo) {
     if (nodo->padre == NULL) {
-        printf("\n\nInicio:\n");
+        printf("\n\nINICIO DE SOLUCION:\n");
         dispEstado(nodo->estado);
     } else {
         dispCamino(nodo->padre);
@@ -40,14 +40,12 @@ void dispSolucion(tNodo *nodo) {
 /* Crea el nodo raíz. */
 tNodo *nodoInicial() {
     tNodo *nodoInicial = (tNodo *) malloc(sizeof(tNodo));
-    tEstado *copia = (tEstado* )malloc(sizeof(tEstado));
-    memcpy(copia, inicial, sizeof(tEstado));
 
-    nodoInicial->estado = copia;
+    nodoInicial->estado = inicial;
     nodoInicial->padre = NULL;
     nodoInicial->costeCamino = 0;
     nodoInicial->profundidad = 0;
-    nodoInicial->valHeuristica = distObjetivo(copia);//heuristica distancia robot
+    nodoInicial->valHeuristica = distObjetivo(inicial);//heuristica distancia robot
     return nodoInicial;
 }
 
@@ -84,10 +82,10 @@ int busquedaACiegas(int selector) {
 
     tNodo *Inicial = nodoInicial();
 
-    dispEstado(Inicial->estado);
-
     Lista Abiertos = (Lista) CrearLista(MAXI);
-    Lista Sucesores, Cerrados = (Lista) CrearLista(MAXI);
+    Lista Cerrados = (Lista) CrearLista(MAXI);
+    Lista NoValidos = (Lista) CrearLista(MAXI);
+    Lista Sucesores;
 
     InsertarUltimo((void *) Inicial, Abiertos);
 
@@ -105,28 +103,32 @@ int busquedaACiegas(int selector) {
                 } else if(selector == ANCHURA) {
                     Abiertos = Concatenar(Abiertos, Sucesores);
                 }
+            } else if(objetivo == -1) {
+                InsertarUltimo((void* )Actual, NoValidos);
             }
             InsertarUltimo((void *)Actual, Cerrados);
         }
 //        system("pause");
     }
-    if(objetivo == 1) {
-        dispSolucion(Actual);
-        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
-    } else if(objetivo == -1) {
+    if(ListaVacia(Abiertos) || objetivo == -1) {
+        Actual = (void *)ExtraerPrimero(NoValidos);
         dispCamino(Actual);
-        printf("Solución no encontrada.\n");
+        printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
+    } else if(objetivo == 1) {
+        dispSolucion(Actual);
+        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
+        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
     }
     system("pause");
     system("cls");
     return objetivo;
 }
 
-int busquedaProfundidadLimitada() {
+int busquedaProfundidadLimitadaIterativa(int selector) {
     return 1;
 }
 
-int busquedaHeuristica() {
+int busquedaHeuristica(int selector) {
     int objetivo = 0, contador = 0;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
