@@ -14,11 +14,9 @@ void menuPrincipal() {
     printf("Bienvenido al programa RunnerBot.\nDesarrollado por Santiago Jesus Mas.\n\n");
 
     inicial = menuSeleccionEstado();
-    dispEstado(inicial);
-
     do {
-    menuBusqueda();
-    } while(continua = 1);
+        continua = menuBusqueda();
+    } while(continua == 1);
 }
 
 tEstado *menuSeleccionEstado() {
@@ -45,31 +43,43 @@ tEstado* eligeModoCrearEstado(int selector) {
     }
 }
 
-void menuBusqueda() {
-    int selector = 0, salida;
+int menuBusqueda() {
+    int selector = 0, salida = 1;
+    dispEstado(inicial);
     printf("Elige el algoritmo de busqueda que quieres emplear:\n");
     printf("[1]Busqueda en anchura\n[2]Busqueda en profundidad.\n[3]Busqueda heuristica\n");
+    printf("[4]Elegir un nuevo estado inicial.\n[5]Salir del programa.\n");
     do {
         printf("->");
         scanf("%d", &selector);
-        if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
+        if(compruebaSelectorFueraDeRango(selector, 1, 5)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(selector < 1 || selector > 3);
-    eligeTipoDeBusqueda(selector);
+    } while(selector < 1 || selector > 5);
+    if(selector == 5) {
+        salida = 0;
+    }
+    eligeAccionBusquedaSalir(selector);
+    return salida;
 }
 
-void eligeTipoDeBusqueda(int selector) {
+void eligeAccionBusquedaSalir(int selector) {
     switch(selector) {
     case 1:
         printf("Realizando la busqueda a ciegas en anchura.\n");
-        busquedaACiegas(0);
+        busquedaACiegas(ANCHURA);
         break;
     case 2:
         menuBusquedaProfundidad();
         break;
     case 3:
         menuBusquedaHeuristica();
+        break;
+    case 4:
+        inicial = menuSeleccionEstado();
+        break;
+    case 5:
+        printf("Finalizando programa.\n");
         break;
     }
 }
@@ -93,7 +103,8 @@ void eligeBusquedaProfundidad(int selector) {
     switch(selector) {
     case 1:
         printf("Realizando una busqueda en profundidad a ciegas.\n");
-        busquedaACiegas(1);
+        dispEstado(inicial);
+        busquedaACiegas(PROFUNDIDAD);
         break;
     case 2:
         printf("Elige el limite de profundidad a expandir.\n");

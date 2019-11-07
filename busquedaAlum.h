@@ -5,6 +5,9 @@
 /* Grado en Ingenieria Informatica - UCA   */
 /*******************************************/
 
+#define ANCHURA 0
+#define PROFUNDIDAD 1
+
 #include "listaia.h"
 #include "bot.h"
 

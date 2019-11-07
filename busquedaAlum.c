@@ -5,9 +5,6 @@
 /* Grado en Ingenieria Informatica - UCA   */
 /*******************************************/
 
-#define ANCHURA 0
-#define PROFUNDIDAD 1
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -43,14 +40,14 @@ void dispSolucion(tNodo *nodo) {
 /* Crea el nodo raíz. */
 tNodo *nodoInicial() {
     tNodo *nodoInicial = (tNodo *) malloc(sizeof(tNodo));
+    tEstado *copia = (tEstado* )malloc(sizeof(tEstado));
+    memcpy(copia, inicial, sizeof(tEstado));
 
-    dispEstado(inicial);
-    nodoInicial->estado = inicial;
+    nodoInicial->estado = copia;
     nodoInicial->padre = NULL;
     nodoInicial->costeCamino = 0;
     nodoInicial->profundidad = 0;
-    nodoInicial->valHeuristica = distObjetivo(inicial);//heuristica distancia robot
-//    inicial->valHeuristica = distObjetivo(inicial->estado) + distRaton(inicial->estado); //heuristica distancia robot + raton
+    nodoInicial->valHeuristica = distObjetivo(copia);//heuristica distancia robot
     return nodoInicial;
 }
 
@@ -86,9 +83,8 @@ int busquedaACiegas(int selector) {
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
     tNodo *Inicial = nodoInicial();
-    dispCamino(Inicial);
+
     dispEstado(Inicial->estado);
-    //tEstado *Final=estadoObjetivo();
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
     Lista Sucesores, Cerrados = (Lista) CrearLista(MAXI);
@@ -112,16 +108,23 @@ int busquedaACiegas(int selector) {
             }
             InsertarUltimo((void *)Actual, Cerrados);
         }
-        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
 //        system("pause");
     }
     if(objetivo == 1) {
         dispSolucion(Actual);
+        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
+    } else if(objetivo == -1) {
+        dispCamino(Actual);
+        printf("Solución no encontrada.\n");
     }
+    system("pause");
+    system("cls");
     return objetivo;
 }
 
-int busquedaProfundidadLimitada(){}
+int busquedaProfundidadLimitada() {
+    return 1;
+}
 
 int busquedaHeuristica() {
     int objetivo = 0, contador = 0;

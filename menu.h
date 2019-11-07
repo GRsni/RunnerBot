@@ -13,10 +13,10 @@ void menuPrincipal();
 tEstado* menuSeleccionEstado();
 
 /*Menu para la seleccion del algoritmo de busqueda*/
-void menuBusqueda();
+int menuBusqueda();
 
 /*Selecciona el tipo de busqueda a realizar segun el selector*/
-void eligeTipoDeBusqueda();
+void eligeAccionBusquedaSalir();
 
 /*Menu para elegir las diferentes opciones de busqueda en profundidad*/
 void menuBusquedaProfundidad();

@@ -45,7 +45,7 @@ tEstado* introducirEstado() {
 }
 
 tEstado* creaEstadoAleatorio() {
-    printf("Creando estado aleatorio[%dx%d] con %d pared%s", N, N, N - 1, (N == 2) ? ".\n" : "des.\n");
+    printf("Creando estado aleatorio[%dx%d] con %d pared%s", N, N, N - 1, (N == 2) ? ".\n" : "es.\n");
 
     int celdas[N][N];
     inicializaMatrizCero(N, celdas);
@@ -86,7 +86,7 @@ void eligePosRatonAleatoria(int tam, int celdas[tam][tam]) {
     do {
         pos = rand() % N;
     } while(celdas[pos][pos] == PARED || celdas[pos][pos] == ROBOT || pos == N - 1);
-    printf("Posicionando el raton en [%d, %d]\n", pos, pos);
+//    printf("Posicionando el raton en [%d, %d]\n", pos, pos);
     celdas[pos][pos] = RATON;
 }
 
@@ -96,7 +96,7 @@ void eligePosRobotAleatoria(int tam, int celdas[tam][tam]) {
         row = rand() % N;
         col = rand() % N;
     } while(celdas[row][col] == PARED || celdas[row][col] == RATON || (row == N - 1 && col == N - 1));
-    printf("Posicionando el robot en [%d, %d]\n", row, col);
+//    printf("Posicionando el robot en [%d, %d]\n", row, col);
     celdas[row][col] = ROBOT;
 }
 
@@ -107,7 +107,7 @@ void colocaParedesAleatorias(int tam, int celdas[tam][tam]) {
             col = rand() % N;
             row = rand() % N;
         } while((col == N - 1 && row == N - 1) || celdas[row][col] == PARED || celdas[row][col] == ROBOT || celdas[row][col] == RATON);
-        printf("Colocando muro en [%d, %d]\n", row, col);
+//        printf("Colocando muro en [%d, %d]\n", row, col);
         celdas[row][col] = PARED;
     }
 }
@@ -183,7 +183,6 @@ tEstado *aplicaOperador(unsigned op, tEstado *estado) {
     } else if(op == IZQUIERDA || op == DERECHA) {
         mueveRaton(nuevo, ABAJO);
     }
-    dispEstado(nuevo);
     return nuevo;
 }
 
