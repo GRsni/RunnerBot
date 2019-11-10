@@ -137,26 +137,46 @@ int esValido(unsigned op, tEstado *estado) {
 
 int compruebaArriba(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
-//    printf("%d, %d, %d\n", rRow == 0, estado->celdas[rRow - 1][rCol] == PARED, rCol == mCol - 1 && rRow == mRow);
-    return !(rRow == 0 || estado->celdas[rRow - 1][rCol] == PARED || (rCol == mCol - 1 && rRow == mRow));
+    int nextMCol = mCol, nextMRow = mRow;
+    if(mRow > 0) {//raton se mueve si no esta en la esquina
+        nextMCol = mCol - 1;
+        nextMRow = mRow - 1;
+    }
+
+    return !(rRow == 0 || estado->celdas[rRow - 1][rCol] == PARED || (rCol == nextMCol && rRow - 1 == nextMRow));
 }
 
 int compruebaAbajo(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
+    int nextMCol = mCol, nextMRow = mRow;
+    if(mRow > 0) {//raton se mueve si no esta en la esquina
+        nextMCol = mCol - 1;
+        nextMRow = mRow - 1;
+    }
 //    printf("%d, %d, %d\n", rRow == N - 1, estado->celdas[rRow + 1][rCol] == PARED, rCol == mCol - 1 && rRow == mRow - 2);
-    return !(rRow == N - 1 || estado->celdas[rRow + 1][rCol] == PARED || (rCol == mCol - 1 && rRow == mRow - 2));
+    return !(rRow == N - 1 || estado->celdas[rRow + 1][rCol] == PARED || (rCol == nextMCol && rRow + 1 == nextMRow));
 }
 
 int compruebaIzquierda(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
+    int nextMCol = mCol, nextMRow = mRow;
+    if(mRow < N - 1) {//raton se mueve si no esta en la esquina
+        nextMCol = mCol + 1;
+        nextMRow = mRow + 1;
+    }
 //    printf("%d, %d, %d\n", rCol == 0, estado->celdas[rRow][rCol - 1] == PARED, rCol == mCol + 2 && rRow == mRow + 1);
-    return !(rCol == 0 || estado->celdas[rRow][rCol - 1] == PARED || (rCol == mCol + 2 && rRow == mRow + 1));
+    return !(rCol == 0 || estado->celdas[rRow][rCol - 1] == PARED || (rCol - 1 == nextMCol && rRow == nextMRow));
 }
 
 int compruebaDerecha(tEstado *estado) {
     int rCol = estado->robCol, rRow = estado->robRow, mCol = estado->mouseCol, mRow = estado->mouseRow;
+    int nextMCol = mCol, nextMRow = mRow;
+    if(mRow < N - 1) {//raton se mueve si no esta en la esquina
+        nextMCol = mCol + 1;
+        nextMRow = mRow + 1;
+    }
 //    printf("%d, %d, %d\n", rCol == N - 1, estado->celdas[rRow][rCol + 1] == PARED, rCol == mCol && rRow == mRow + 1);
-    return !(rCol == N - 1 || estado->celdas[rRow][rCol + 1] == PARED || (rCol == mCol && rRow == mRow + 1));
+    return !(rCol == N - 1 || estado->celdas[rRow][rCol + 1] == PARED || (rCol + 1 == nextMCol && rRow == nextMRow));
 }
 
 tEstado *aplicaOperador(unsigned op, tEstado *estado) {

@@ -47,16 +47,17 @@ int menuBusqueda() {
     int selector = 0, salida = 1;
     dispEstado(inicial);
     printf("Elige el algoritmo de busqueda que quieres emplear:\n");
-    printf("[1]Busqueda en anchura\n[2]Busqueda en profundidad.\n[3]Busqueda heuristica\n");
-    printf("[4]Elegir un nuevo estado inicial.\n[5]Salir del programa.\n");
+    printf("[1]Busqueda en anchura\n[2]Busqueda en profundidad.\n[3]Busqueda en profundidad limitada.\n");
+    printf("[4]Busqueda en profundidad iterativa.\n[5]Busqueda heuristica voraz.\n[6]Busqueda heuristica A*.\n");
+    printf("[7]Busqueda local.\n[8]Busqueda en haz.\n[9]Elegir un nuevo estado inicial.\n[10]Salir del programa.\n");
     do {
         printf("->");
         scanf("%d", &selector);
-        if(compruebaSelectorFueraDeRango(selector, 1, 5)) {
+        if(compruebaSelectorFueraDeRango(selector, 1, 10)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(selector < 1 || selector > 5);
-    if(selector == 5) {
+    } while(selector < 1 || selector > 10);
+    if(selector == 10) {
         salida = 0;
     }
     eligeAccionBusquedaSalir(selector);
@@ -64,69 +65,63 @@ int menuBusqueda() {
 }
 
 void eligeAccionBusquedaSalir(int selector) {
+    int item = 0;
     switch(selector) {
     case 1:
         printf("Realizando la busqueda a ciegas en anchura.\n");
         busquedaACiegas(ANCHURA);
         break;
     case 2:
-        menuBusquedaProfundidad();
-        break;
-    case 3:
-        menuBusquedaHeuristica();
-        break;
-    case 4:
-        inicial = menuSeleccionEstado();
-        break;
-    case 5:
-        printf("Finalizando programa.\n");
-        break;
-    }
-}
-
-void menuBusquedaProfundidad() {
-    int selector = 0;
-    printf("Elige el tipo de busqueda en profundidad a realizar:\n");
-    printf("[1]Profundidad a ciegas.\n[2]Profundidad limitada.\n[3]Profundidad iterativa.\n");
-    do {
-        printf("->");
-        scanf("%d", &selector);
-        if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
-            imprimeSelectorFueraDeRango();
-        }
-    } while(selector < 1 || selector > 3);
-    eligeBusquedaProfundidad(selector);
-}
-
-void eligeBusquedaProfundidad(int selector) {
-    int iter = 0;
-    switch(selector) {
-    case 1:
-        printf("Realizando una busqueda en profundidad a ciegas.\n");
-        dispEstado(inicial);
+        printf("Realizando la busqueda a ciegas en profundidad.\n");
         busquedaACiegas(PROFUNDIDAD);
         break;
-    case 2:
-        printf("Elige el limite de profundidad a expandir.\n");
+    case 3:
+        printf("Elige la profundida maxima de busqueda:\n");
         do {
             printf("->");
-            scanf("%d", &iter);
-            if(compruebaSelectorFueraDeRango(iter, 1, 100000)) {
+            scanf("%d", &item);
+            if(item < 1) {
+                printf("La profundidad debe ser mayor de 0\n");
+            }
+        } while(item < 1);
+        printf("Realizando la busqueda a ciegas en profundidad limitada hasta profundidad %d.\n", item);
+        busquedaProfundidadLimitada(item);
+        break;
+    case 4:
+        printf("Realizando la busqueda a ciegas en profundidad iterativa.\n");
+        busquedaProfundidaIterativa();
+        break;
+    case 5:
+        printf("Realizando la busqueda heuristica voraz.\n");
+        busquedaHeuristica(GREEDY);
+        break;
+    case 6:
+        printf("Realizando la busqueda heuristica A*.\n");
+        busquedaHeuristica(ASTAR);
+        break;
+    case 7:
+        printf("Realizando la busqueda local.\n");
+        busquedaLocal();
+        break;
+    case 8:
+        printf("Elige el numero de nodos del haz[2-4]:\n");
+        do {
+            printf("->");
+            scanf("%d", &item);
+            if(compruebaSelectorFueraDeRango(item, 2, 4)) {
                 imprimeSelectorFueraDeRango();
             }
-        } while(iter < 1);
-        printf("Realizando una busqueda en profundidad con limite %d.\n", iter);
-        busquedaProfundidadLimitadaIterativa(0);
+        } while(item < 2 || item > 4);
+        printf("Realizando la busqueda local en haz con %d nodos.\n", item);
+        busquedaHaz(item);
         break;
-    case 3:
-        printf("Realizando busqueda en profundidad iterativa.\n");
+    case 9:
+        inicial = menuSeleccionEstado();
+        break;
+    case 10:
+        printf("Saliendo del programa.\n\n");
         break;
     }
-}
-
-
-void menuBusquedaHeuristica() {
-
 }
 
 void dispEstado(tEstado *estado) {

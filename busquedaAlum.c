@@ -124,7 +124,59 @@ int busquedaACiegas(int selector) {
     return objetivo;
 }
 
-int busquedaProfundidadLimitadaIterativa(int selector) {
+int busquedaProfundidadLimitada(int prof) {
+    int objetivo = 0, contador = 0, valido = 1;
+    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
+
+    tNodo *Inicial = nodoInicial();
+
+    Lista Abiertos = (Lista) CrearLista(MAXI);
+    Lista Cerrados = (Lista) CrearLista(MAXI);
+    Lista NoValidos = (Lista) CrearLista(MAXI);
+    Lista Sucesores;
+
+    InsertarUltimo((void *) Inicial, Abiertos);
+
+    while (!ListaVacia(Abiertos) && objetivo < 1 && valido == 1) {
+        contador++;
+        Actual = (void *) ExtraerPrimero(Abiertos);
+
+        if(Actual->costeCamino > prof) {
+            valido = 0;
+        }
+
+        EliminarPrimero(Abiertos);
+        if(!esRepetido(Actual->estado, Cerrados)) {
+            objetivo = testObjetivo(Actual->estado);
+            if (objetivo == 0) {
+                Sucesores = expandir(Actual);
+                Abiertos = Concatenar(Sucesores, Abiertos);
+            } else if(objetivo == -1) {
+                InsertarUltimo((void* )Actual, NoValidos);
+            }
+            InsertarUltimo((void *)Actual, Cerrados);
+        }
+//        system("pause");
+    }
+
+
+    if(valido == 0) {
+        printf("------------SOLUCION NO ENCONTRADA EN LA PROFUNDIDAD LIMITE-------------\n");
+    } else if(objetivo == 1) {
+        dispSolucion(Actual);
+        printf("-------------------------SOLUCION ENCONTRADA----------------------------\n");
+        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
+    } else if(objetivo == -1) {
+        Actual = (void *)ExtraerPrimero(NoValidos);
+        dispCamino(Actual);
+        printf("------------------------SOLUCION NO ENCONTRADA--------------------------\n");
+    }
+    system("pause");
+    system("cls");
+    return objetivo;
+}
+
+int busquedaProfundidaIterativa() {
     return 1;
 }
 
@@ -170,6 +222,10 @@ int busquedaHeuristica(int selector) {
     return objetivo;
 
 }
+
+int busquedaLocal() {}
+
+int busquedaHaz(int haz) {}
 
 int esRepetido(tEstado *actual, Lista C) {
     int i = 0, repetido = 0;

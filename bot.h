@@ -6,14 +6,12 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 4
+#define N 7
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
 #define RATON 3
 
-#ifndef MAPA_INICIAL
-#define MAPA_INICIAL
 #if N==2
 static int mapa_inicial[N][N] = {
     {RATON, ROBOT},
@@ -21,8 +19,8 @@ static int mapa_inicial[N][N] = {
 };
 #elif N==3
 static int mapa_inicial[N][N] = {
-    {VACIO, ROBOT, PARED},
-    {VACIO, RATON, VACIO},
+    {RATON, VACIO, PARED},
+    {VACIO, VACIO, ROBOT},
     {VACIO, VACIO, VACIO}
 };
 #elif N==4
@@ -40,9 +38,18 @@ static int mapa_inicial[N][N] = {
     {VACIO, ROBOT, PARED, PARED, VACIO},
     {VACIO, VACIO, VACIO, VACIO, VACIO}
 };
+#elif N==7
+static int mapa_inicial[N][N] = {
+    {VACIO, PARED, VACIO, VACIO, PARED, VACIO, VACIO},
+    {VACIO, VACIO, VACIO, ROBOT, VACIO, VACIO, VACIO},
+    {VACIO, VACIO, RATON, VACIO, PARED, VACIO, VACIO},
+    {VACIO, VACIO, VACIO, VACIO, VACIO, VACIO, VACIO},
+    {VACIO, VACIO, VACIO, VACIO, VACIO, VACIO, VACIO},
+    {VACIO, PARED, VACIO, VACIO, PARED, VACIO, VACIO},
+    {VACIO, VACIO, VACIO, VACIO, VACIO, VACIO, VACIO}
+};
 
 #endif // N
-#endif // MAPA_INICIAL
 
 #endif // CONSTANTES
 
@@ -81,16 +88,16 @@ int coste(unsigned op, tEstado *estado);
   Devuelve 1 si el movimiento es válido y 0 en otro caso. */
 int esValido(unsigned op, tEstado* estado);
 
-/*Comprueba las codiciones del operador ARRIBA*/
+/*Devuelve 1 si op ARRIBA es valido*/
 int compruebaArriba(tEstado *estado);
 
-/*Comprueba las codiciones del operador ABAJO*/
+/*Devuelve 1 si op ABAJO es valido*/
 int compruebaAbajo(tEstado *estado);
 
-/*Comprueba las codiciones del operador IZQUIERDA*/
+/*Devuelve 1 si op IZQUIERDA es valido*/
 int compruebaIzquierda(tEstado *estado);
 
-/*Comprueba las codiciones del operador DERECHA*/
+/*Devuelve 1 si op DERECHA es valido*/
 int compruebaDerecha(tEstado *estado);
 
 /* Aplica un operador a una configuración concreta del puzle.

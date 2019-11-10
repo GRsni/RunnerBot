@@ -16,18 +16,6 @@ int menuBusqueda();
 /*Selecciona el tipo de busqueda a realizar segun el selector*/
 void eligeAccionBusquedaSalir();
 
-/*Menu para elegir las diferentes opciones de busqueda en profundidad*/
-void menuBusquedaProfundidad();
-
-/*Selecciona el tipo de busqueda en profundidad segun el selector*/
-void eligeBusquedaProfundidad(int selector);
-
-/*Menu para elegir las diferentes busquedas heuristicas*/
-void menuBusquedaHeuristica();
-
-/*Selecciona el tipo de busqueda heuristica segun el selector*/
-void eligeBusquedaHeuristica(int selector);
-
 /* Muestra el contenido del puzle. */
 void dispEstado(tEstado *estado);
 
