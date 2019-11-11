@@ -16,6 +16,7 @@
 #include "menu.h"
 
 extern tEstado *inicial;
+extern int heuristica;
 
 void dispCamino(tNodo *nodo) {
     if (nodo->padre == NULL) {
@@ -45,7 +46,7 @@ tNodo *nodoInicial() {
     nodoInicial->padre = NULL;
     nodoInicial->costeCamino = 0;
     nodoInicial->profundidad = 0;
-    nodoInicial->valHeuristica = distObjetivo(inicial);//heuristica distancia robot
+    nodoInicial->valHeuristica = calculaHeuristica(inicial);//heuristica distancia robot
     return nodoInicial;
 }
 
@@ -65,7 +66,7 @@ Lista expandir(tNodo *nodo) {
             nuevo->padre = nodo;
             nuevo->operador = op;
             nuevo->costeCamino = nodo->costeCamino + coste(op, nodo->estado);
-            nuevo->valHeuristica = distObjetivo(s);
+            nuevo->valHeuristica = calculaHeuristica(s);
             nuevo->profundidad = nodo->profundidad + 1;
             if (!ListaLlena(sucesores)) {
                 InsertarUltimo((void *) nuevo, sucesores);
@@ -138,13 +139,10 @@ int busquedaProfundidadLimitada(int prof) {
     InsertarUltimo((void *) Inicial, Abiertos);
 
     while (!ListaVacia(Abiertos) && objetivo < 1) {
-        enRango = 1;
         contador++;
         Actual = (void *) ExtraerPrimero(Abiertos);
 
-        if(Actual->costeCamino > prof) {
-            enRango = 0;
-        }
+        enRango = nodoNoSuperaProfundidad(Actual->profundidad, prof);
 
         EliminarPrimero(Abiertos);
         if(!esRepetido(Actual->estado, Cerrados) && enRango) {
@@ -172,13 +170,22 @@ int busquedaProfundidadLimitada(int prof) {
         dispCamino(Actual);
         printf("------------------------SOLUCION NO ENCONTRADA--------------------------\n");
     }
+    printf("Objetivo en prof lim: %d\n", objetivo);
     system("pause");
     system("cls");
     return objetivo;
 }
 
 int busquedaProfundidaIterativa() {
-    return 1;
+    int prof = 1, objetivo;
+    do {
+        objetivo = busquedaProfundidadLimitada(prof);
+    } while(objetivo == 0);
+    return objetivo;
+}
+
+int nodoNoSuperaProfundidad(int profNodo, int prof) {
+    return profNodo <= prof;
 }
 
 int busquedaHeuristica(int selector) {
@@ -208,9 +215,17 @@ int busquedaHeuristica(int selector) {
                 Ordenar(Abiertos, selector);
                 int i;
                 for(i = 0; i < Abiertos->Nelem; i++) {
+                    int val;
                     tNodo *a = (void *)ExtraerElem(Abiertos, i);
-                    printf("Coste abiertos: %d\n", a->costeCamino);
+                    if(selector == GREEDY) {
+                        val = a->costeCamino;
+                    } else if(selector == ASTAR) {
+                        val = a->valHeuristica;
+                    }
+                    printf("Coste abiertos: %d\n", val);
                 }
+
+                system("pause");
             } else if(objetivo == -1) {
                 InsertarUltimo((void* )Actual, NoValidos);
             }
@@ -236,14 +251,14 @@ int busquedaHeuristica(int selector) {
 }
 
 int busquedaLocal() {
-    return 1;
+    return busquedaHaz(1);
 }
 
 int busquedaHaz(int haz) {
     return 1;
 }
 
-int esRepetido(tEstado *actual, Lista C) {
+int esRepetido(tEstado * actual, Lista C) {
     int i = 0, repetido = 0;
 
     while(i < C->Nelem && !repetido) {
@@ -256,14 +271,23 @@ int esRepetido(tEstado *actual, Lista C) {
     return repetido;
 }
 
-int distObjetivo(tEstado *estado) {
+int calculaHeuristica(tEstado * estado) {
+    int val = 0;
+    if(heuristica == DISTROB) {
+        val = distObjetivo(estado);
+    } else if(heuristica == DISTROBRAT) {
+        val = (distObjetivo(estado) - distRaton(estado));
+    }
+    return val;
+}
+int distObjetivo(tEstado * estado) {
     int distX = (N - 1) - estado->robCol;
     int distY = (N - 1) - estado->robRow;
     return distX + distY;
 }
 
-int distRaton(tEstado *estado) {
-    return estado->mouseCol + estado->mouseRow;
+int distRaton(tEstado * estado) {
+    return (estado->mouseCol + estado->mouseRow) / 2;
 }
 
 void Ordenar(Lista C, int selector) {
@@ -297,25 +321,5 @@ void Ordenar(Lista C, int selector) {
     } while(!ordenado);
 }
 
-void OrdenarAStar(Lista C) {
-    int i, ordenado, tam = C->Nelem;
-    do {
-        ordenado = 1;
-        for(i = 0; i < tam - 1; i++) {
-            tNodo *nodo_i = (void *)ExtraerElem(C, i);
-            tNodo *nodo_next = (void *)ExtraerElem(C, i + 1);
-            int valor_i = nodo_i->costeCamino + nodo_i->valHeuristica;
-            int valor_next = nodo_next->costeCamino + nodo_next->valHeuristica;
-            printf("Coste i: %d, Coste next: %d\n", nodo_i->costeCamino, nodo_next->costeCamino);
-            if(valor_i > valor_next) {
-                ordenado = 0;
-                tElemento *a = C->elementos[i];
-                tElemento *b = C->elementos[i + 1];
-            }
-        }
-        printf("\n");
-        tam--;
-    } while(!ordenado);
-}
 
 

@@ -12,7 +12,7 @@ int heuristica;
 
 void inicializaPrograma() {
     srand(time(NULL));
-    inicial == (tEstado* )malloc(sizeof(tEstado));
+    inicial = (tEstado* )malloc(sizeof(tEstado));
 }
 
 int main() {

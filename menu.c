@@ -8,13 +8,13 @@
 #include "bot.h"
 
 extern tEstado *inicial;
+extern int heuristica;
 
 void menuPrincipal() {
     int continua = 1;
     printf("Bienvenido al programa RunnerBot.\nDesarrollado por Santiago Jesus Mas.\n\n");
 
     inicial = menuSeleccionEstado();
-    menuFuncionHeuristica();
     do {
         continua = menuBusqueda();
     } while(continua == 1);
@@ -30,7 +30,7 @@ tEstado *menuSeleccionEstado() {
         if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(selector < 1 || selector > 3);
+    } while(compruebaSelectorFueraDeRango(selector, 1, 3));
     return eligeModoCrearEstado(selector);
 }
 
@@ -44,7 +44,7 @@ tEstado* eligeModoCrearEstado(int selector) {
     }
 }
 
-void menuFuncionHeuristica() {
+int menuFuncionHeuristica() {
     int selector;
     printf("Elige la funcion heuristica a emplear:\n");
     printf("[1]Distancia del robot al objetivo.\n[2]Distancia del robot+distancia del raton.\n");
@@ -54,8 +54,8 @@ void menuFuncionHeuristica() {
         if(compruebaSelectorFueraDeRango(selector, 1, 2)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(selector < 0 || selector > 2);
-    heuristica = selector;
+    } while(compruebaSelectorFueraDeRango(selector, 1, 2));
+    return selector;
 
 }
 
@@ -72,7 +72,7 @@ int menuBusqueda() {
         if(compruebaSelectorFueraDeRango(selector, 1, 10)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(selector < 1 || selector > 10);
+    } while(compruebaSelectorFueraDeRango(selector, 1, 10));
     if(selector == 10) {
         salida = 0;
     }
@@ -112,6 +112,7 @@ void eligeAccionBusquedaSalir(int selector) {
         busquedaHeuristica(GREEDY);
         break;
     case 6:
+        heuristica = menuFuncionHeuristica();
         printf("Realizando la busqueda heuristica A*.\n");
         busquedaHeuristica(ASTAR);
         break;

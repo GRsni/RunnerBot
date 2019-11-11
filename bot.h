@@ -6,7 +6,7 @@
 #define IZQUIERDA 3
 #define DERECHA 4
 #define NUM_OPERADORES 4
-#define N 4
+#define N 7
 #define VACIO 0
 #define PARED 1
 #define ROBOT 2
