@@ -90,12 +90,6 @@ void InsertarPrimero(tElemento *e, Lista C) {
     C->Nelem = C->Nelem + 1;
 }
 
-void IntercambiaElemento(tElemento *a, tElemento *b) {
-    tElemento *aux = a;
-    a = b;
-    b = aux;
-}
-
 //Pre: Lista L1 no está vacía
 //Post: Devuelve L1+L2
 Lista Concatenar(Lista L1, Lista L2) {

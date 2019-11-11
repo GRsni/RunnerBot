@@ -17,12 +17,13 @@
 
 int busquedaACiegas(int selector);
 int busquedaProfundidadLimitada(int prof);
-int compruebaProfundidad
 
 int busquedaProfundidaIterativa();
 int busquedaHeuristica(int selector);
 int busquedaLocal();
 int busquedaHaz(int haz);
+
+void Ordenar(Lista C, int tipo);
 void OrdenarGreedy(Lista C);
 void OrdenarAStar(Lista C);
 int esRepetido(tEstado *estado, Lista C);

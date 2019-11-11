@@ -14,6 +14,7 @@ void menuPrincipal() {
     printf("Bienvenido al programa RunnerBot.\nDesarrollado por Santiago Jesus Mas.\n\n");
 
     inicial = menuSeleccionEstado();
+    menuFuncionHeuristica();
     do {
         continua = menuBusqueda();
     } while(continua == 1);
@@ -41,6 +42,21 @@ tEstado* eligeModoCrearEstado(int selector) {
     } else {
         return crearEstado(mapa_inicial);
     }
+}
+
+void menuFuncionHeuristica() {
+    int selector;
+    printf("Elige la funcion heuristica a emplear:\n");
+    printf("[1]Distancia del robot al objetivo.\n[2]Distancia del robot+distancia del raton.\n");
+    do {
+        printf("->");
+        scanf("%d", &selector);
+        if(compruebaSelectorFueraDeRango(selector, 1, 2)) {
+            imprimeSelectorFueraDeRango();
+        }
+    } while(selector < 0 || selector > 2);
+    heuristica = selector;
+
 }
 
 int menuBusqueda() {

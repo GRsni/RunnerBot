@@ -125,7 +125,7 @@ int busquedaACiegas(int selector) {
 }
 
 int busquedaProfundidadLimitada(int prof) {
-    int objetivo = 0, contador = 0, valido = 1;
+    int objetivo = 0, contador = 0, enRango = 1;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
     tNodo *Inicial = nodoInicial();
@@ -137,16 +137,17 @@ int busquedaProfundidadLimitada(int prof) {
 
     InsertarUltimo((void *) Inicial, Abiertos);
 
-    while (!ListaVacia(Abiertos) && objetivo < 1 && valido == 1) {
+    while (!ListaVacia(Abiertos) && objetivo < 1) {
+        enRango = 1;
         contador++;
         Actual = (void *) ExtraerPrimero(Abiertos);
 
         if(Actual->costeCamino > prof) {
-            valido = 0;
+            enRango = 0;
         }
 
         EliminarPrimero(Abiertos);
-        if(!esRepetido(Actual->estado, Cerrados)) {
+        if(!esRepetido(Actual->estado, Cerrados) && enRango) {
             objetivo = testObjetivo(Actual->estado);
             if (objetivo == 0) {
                 Sucesores = expandir(Actual);
@@ -160,7 +161,7 @@ int busquedaProfundidadLimitada(int prof) {
     }
 
 
-    if(valido == 0) {
+    if(!enRango) {
         printf("------------SOLUCION NO ENCONTRADA EN LA PROFUNDIDAD LIMITE-------------\n");
     } else if(objetivo == 1) {
         dispSolucion(Actual);
@@ -190,6 +191,7 @@ int busquedaHeuristica(int selector) {
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
     Lista Sucesores, Cerrados = (Lista) CrearLista(MAXI);
+    Lista NoValidos = (Lista) CrearLista(MAXI);
 
     InsertarUltimo((void *) Inicial, Abiertos);
 
@@ -200,17 +202,17 @@ int busquedaHeuristica(int selector) {
         EliminarPrimero(Abiertos);
         if(!esRepetido(Actual->estado, Cerrados)) {
             objetivo = testObjetivo(Actual->estado);
-            if (!objetivo) {
+            if (objetivo == 0) {
                 Sucesores = expandir(Actual);
                 Abiertos = Concatenar(Sucesores, Abiertos);
-
-                OrdenarGreedy(Abiertos);
-//                OrdenarAStar(Abiertos);
+                Ordenar(Abiertos, selector);
                 int i;
                 for(i = 0; i < Abiertos->Nelem; i++) {
                     tNodo *a = (void *)ExtraerElem(Abiertos, i);
                     printf("Coste abiertos: %d\n", a->costeCamino);
                 }
+            } else if(objetivo == -1) {
+                InsertarUltimo((void* )Actual, NoValidos);
             }
 
             InsertarUltimo((void *)Actual, Cerrados);
@@ -218,14 +220,28 @@ int busquedaHeuristica(int selector) {
         printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
 //        system("pause");
     }
-    dispSolucion(Actual);
+    if(ListaVacia(Abiertos) || objetivo == -1) {
+        Actual = (void *)ExtraerPrimero(NoValidos);
+        dispCamino(Actual);
+        printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
+    } else if(objetivo == 1) {
+        dispSolucion(Actual);
+        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
+        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
+    }
+    system("pause");
+    system("cls");
     return objetivo;
 
 }
 
-int busquedaLocal() {}
+int busquedaLocal() {
+    return 1;
+}
 
-int busquedaHaz(int haz) {}
+int busquedaHaz(int haz) {
+    return 1;
+}
 
 int esRepetido(tEstado *actual, Lista C) {
     int i = 0, repetido = 0;
@@ -250,20 +266,31 @@ int distRaton(tEstado *estado) {
     return estado->mouseCol + estado->mouseRow;
 }
 
-void OrdenarGreedy(Lista C) {
+void Ordenar(Lista C, int selector) {
     int i, ordenado, tam = C->Nelem;
+    int valActual, valSig;
+    tElemento *e = (tElemento* )malloc(sizeof(tElemento));
     do {
         ordenado = 1;
         for(i = 0; i < tam - 1; i++) {
             tNodo *nodo_i = (void *)ExtraerElem(C, i);
             tNodo *nodo_next = (void *)ExtraerElem(C, i + 1);
-            printf("Coste i: %d, Coste next: %d\n", nodo_i->costeCamino, nodo_next->costeCamino);
-            if(nodo_i->costeCamino < nodo_next->costeCamino) {
-                ordenado = 0;
-                tElemento *a = C->elementos[i];
-                tElemento *b = C->elementos[i + 1];
-                IntercambiaElemento(a, b);
+            if(selector == GREEDY) {
+                valActual = nodo_i->costeCamino;
+                valSig = nodo_next->costeCamino;
+            } else if(selector == ASTAR) {
+                valActual = nodo_i->costeCamino + nodo_i->valHeuristica;
+                valSig = nodo_next->costeCamino + nodo_next->valHeuristica;
             }
+            printf("Val i: %d, Val next: %d\n", valActual, valSig);
+            if(valActual > valSig) {
+                ordenado = 0;
+                e = C->elementos[i];
+                C->elementos[i] = C->elementos[i + 1];
+                C->elementos[i + 1] = e;
+
+            }
+//            system("pause");
         }
         printf("\n");
         tam--;
@@ -284,7 +311,6 @@ void OrdenarAStar(Lista C) {
                 ordenado = 0;
                 tElemento *a = C->elementos[i];
                 tElemento *b = C->elementos[i + 1];
-                IntercambiaElemento(a, b);
             }
         }
         printf("\n");

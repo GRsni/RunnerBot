@@ -10,8 +10,6 @@
 
 #define MAXI 3000
 
-
-
 #ifndef _tElemento_
 #define _tElemento_
 typedef void *tElemento;
@@ -47,10 +45,6 @@ void InsertarPrimero(tElemento *x, Lista C);
 //Pre: Lista C no está llena
 //Post:Inserta el elemento al final de la lista
 void InsertarUltimo(tElemento *x, Lista C);
-
-//Pre: -
-//Post: intercambia el contenido de los elementos
-void IntercambiaElemento(tElemento *a, tElemento *b);
 
 //Pre: Lista C no está vacía, i: es un índice entre 0 y TamMax
 //Post:Devuelve el elemento i-ésimo de la lista C

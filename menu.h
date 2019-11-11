@@ -10,6 +10,9 @@ void menuPrincipal();
 /*Menu para la seleccion del estado inicial*/
 tEstado* menuSeleccionEstado();
 
+/*Muestra el menu de seleccion del funcion heuristica*/
+void menuFuncionHeuristica();
+
 /*Menu para la seleccion del algoritmo de busqueda*/
 int menuBusqueda();
 

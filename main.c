@@ -8,6 +8,7 @@
 #include "menu.h"
 
 tEstado *inicial;
+int heuristica;
 
 void inicializaPrograma() {
     srand(time(NULL));
