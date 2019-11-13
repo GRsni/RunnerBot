@@ -48,7 +48,7 @@ void imprimeMatriz(int tam, int celdas[tam][tam]) {
     }
 }
 
-int compruebaSelectorFueraDeRango(int selec, int inf, int sup) {
+int selectorFueraDeRango(int selec, int inf, int sup) {
     return selec < inf || selec > sup;
 }
 

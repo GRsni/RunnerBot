@@ -19,6 +19,12 @@ int menuBusqueda();
 /*Selecciona el tipo de busqueda a realizar segun el selector*/
 void eligeAccionBusquedaSalir();
 
+/*Pide por teclado la profundidad maxima para la busqueda en profundidad limitada*/
+int introduceProfMaxima();
+
+/*Pide por teclado el tamaño del haz de busqueda*/
+int introduceTamanoHaz();
+
 /* Muestra el contenido del puzle. */
 void dispEstado(tEstado *estado);
 

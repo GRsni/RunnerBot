@@ -19,8 +19,8 @@ void inicializaMatrizCero(int tam, int celdas[tam][tam]);
 /*Imprime una matriz de enteros por pantalla*/
 void imprimeMatriz(int tam, int celdas[tam][tam]);
 
-/*Devuelve 1 si el selector de haya fuera de rango, 0 en otro caso*/
-int compruebaSelectorFueraDeRango(int selec, int inf, int sup);
+/*Devuelve 1 si el selector esta fuera de rango, 0 en otro caso*/
+int selectorFueraDeRango(int selec, int inf, int sup);
 
 /*Imprime un mensaje de error de selector fuera de rango*/
 void imprimeSelectorFueraDeRango();

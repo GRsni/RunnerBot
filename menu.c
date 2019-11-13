@@ -27,10 +27,10 @@ tEstado *menuSeleccionEstado() {
     do {
         printf("->");
         scanf("%d", &selector);
-        if(compruebaSelectorFueraDeRango(selector, 1, 3)) {
+        if(selectorFueraDeRango(selector, 1, 3)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(compruebaSelectorFueraDeRango(selector, 1, 3));
+    } while(selectorFueraDeRango(selector, 1, 3));
     return eligeModoCrearEstado(selector);
 }
 
@@ -51,10 +51,10 @@ int menuFuncionHeuristica() {
     do {
         printf("->");
         scanf("%d", &selector);
-        if(compruebaSelectorFueraDeRango(selector, 1, 2)) {
+        if(selectorFueraDeRango(selector, 1, 2)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(compruebaSelectorFueraDeRango(selector, 1, 2));
+    } while(selectorFueraDeRango(selector, 1, 2));
     return selector;
 
 }
@@ -69,10 +69,10 @@ int menuBusqueda() {
     do {
         printf("->");
         scanf("%d", &selector);
-        if(compruebaSelectorFueraDeRango(selector, 1, 10)) {
+        if(selectorFueraDeRango(selector, 1, 10)) {
             imprimeSelectorFueraDeRango();
         }
-    } while(compruebaSelectorFueraDeRango(selector, 1, 10));
+    } while(selectorFueraDeRango(selector, 1, 10));
     if(selector == 10) {
         salida = 0;
     }
@@ -92,14 +92,7 @@ void eligeAccionBusquedaSalir(int selector) {
         busquedaACiegas(PROFUNDIDAD);
         break;
     case 3:
-        printf("Elige la profundida maxima de busqueda:\n");
-        do {
-            printf("->");
-            scanf("%d", &item);
-            if(item < 1) {
-                printf("La profundidad debe ser mayor de 0\n");
-            }
-        } while(item < 1);
+        item = introduceProfMaxima();
         printf("Realizando la busqueda a ciegas en profundidad limitada hasta profundidad %d.\n", item);
         busquedaProfundidadLimitada(item);
         break;
@@ -121,14 +114,7 @@ void eligeAccionBusquedaSalir(int selector) {
         busquedaLocal();
         break;
     case 8:
-        printf("Elige el numero de nodos del haz[2-4]:\n");
-        do {
-            printf("->");
-            scanf("%d", &item);
-            if(compruebaSelectorFueraDeRango(item, 2, 4)) {
-                imprimeSelectorFueraDeRango();
-            }
-        } while(item < 2 || item > 4);
+        item = introduceTamanoHaz();
         printf("Realizando la busqueda local en haz con %d nodos.\n", item);
         busquedaHaz(item);
         break;
@@ -136,9 +122,38 @@ void eligeAccionBusquedaSalir(int selector) {
         inicial = menuSeleccionEstado();
         break;
     case 10:
-        printf("Saliendo del programa.\n\n");
+        printf("------SALIENDO DEL PROGRAMA------\n\n");
         break;
     }
+    if(selector < 10) {
+        system("pause");
+    }
+}
+
+int introduceProfMaxima() {
+    int prof;
+    printf("Elige la profundida maxima de busqueda:\n");
+    do {
+        printf("->");
+        scanf("%d", &prof);
+        if(prof < 1) {
+            printf("La profundidad debe ser mayor de 0\n");
+        }
+    } while(prof < 1);
+    return prof;
+}
+
+int introduceTamanoHaz() {
+    int item=0;
+    printf("Elige el numero de nodos del haz[2-4]:\n");
+    do {
+        printf("->");
+        scanf("%d", &item);
+        if(selectorFueraDeRango(item, 2, 4)) {
+            imprimeSelectorFueraDeRango();
+        }
+    } while(selectorFueraDeRango(item, 2, 4));
+    return item;
 }
 
 void dispEstado(tEstado *estado) {

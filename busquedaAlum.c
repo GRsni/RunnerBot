@@ -107,8 +107,8 @@ int busquedaACiegas(int selector) {
             } else if(objetivo == -1) {
                 InsertarUltimo((void* )Actual, NoValidos);
             }
-            InsertarUltimo((void *)Actual, Cerrados);
         }
+        InsertarUltimo((void *)Actual, Cerrados);
 //        system("pause");
     }
     if(ListaVacia(Abiertos) || objetivo == -1) {
@@ -120,8 +120,6 @@ int busquedaACiegas(int selector) {
         printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
         printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
     }
-    system("pause");
-    system("cls");
     return objetivo;
 }
 
@@ -145,7 +143,7 @@ int busquedaProfundidadLimitada(int prof) {
         enRango = nodoNoSuperaProfundidad(Actual->profundidad, prof);
 
         EliminarPrimero(Abiertos);
-        if(!esRepetido(Actual->estado, Cerrados) && enRango) {
+        if(enRango && !esRepetido(Actual->estado, Cerrados)) {
             objetivo = testObjetivo(Actual->estado);
             if (objetivo == 0) {
                 Sucesores = expandir(Actual);
@@ -153,8 +151,8 @@ int busquedaProfundidadLimitada(int prof) {
             } else if(objetivo == -1) {
                 InsertarUltimo((void* )Actual, NoValidos);
             }
-            InsertarUltimo((void *)Actual, Cerrados);
         }
+        InsertarUltimo((void *)Actual, Cerrados);
 //        system("pause");
     }
 
@@ -171,9 +169,11 @@ int busquedaProfundidadLimitada(int prof) {
         printf("------------------------SOLUCION NO ENCONTRADA--------------------------\n");
     }
     printf("Objetivo en prof lim: %d\n", objetivo);
-    system("pause");
-    system("cls");
     return objetivo;
+}
+
+int nodoNoSuperaProfundidad(int profNodo, int prof) {
+    return profNodo <= prof;
 }
 
 int busquedaProfundidaIterativa() {
@@ -182,10 +182,6 @@ int busquedaProfundidaIterativa() {
         objetivo = busquedaProfundidadLimitada(prof);
     } while(objetivo == 0);
     return objetivo;
-}
-
-int nodoNoSuperaProfundidad(int profNodo, int prof) {
-    return profNodo <= prof;
 }
 
 int busquedaHeuristica(int selector) {
@@ -213,19 +209,6 @@ int busquedaHeuristica(int selector) {
                 Sucesores = expandir(Actual);
                 Abiertos = Concatenar(Sucesores, Abiertos);
                 Ordenar(Abiertos, selector);
-                int i;
-                for(i = 0; i < Abiertos->Nelem; i++) {
-                    int val;
-                    tNodo *a = (void *)ExtraerElem(Abiertos, i);
-                    if(selector == GREEDY) {
-                        val = a->costeCamino;
-                    } else if(selector == ASTAR) {
-                        val = a->valHeuristica;
-                    }
-                    printf("Coste abiertos: %d\n", val);
-                }
-
-                system("pause");
             } else if(objetivo == -1) {
                 InsertarUltimo((void* )Actual, NoValidos);
             }
@@ -244,8 +227,6 @@ int busquedaHeuristica(int selector) {
         printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
         printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
     }
-    system("pause");
-    system("cls");
     return objetivo;
 
 }
@@ -276,7 +257,7 @@ int calculaHeuristica(tEstado * estado) {
     if(heuristica == DISTROB) {
         val = distObjetivo(estado);
     } else if(heuristica == DISTROBRAT) {
-        val = (distObjetivo(estado) - distRaton(estado));
+        val = (distObjetivo(estado) + distRaton(estado));
     }
     return val;
 }
@@ -306,7 +287,7 @@ void Ordenar(Lista C, int selector) {
                 valActual = nodo_i->costeCamino + nodo_i->valHeuristica;
                 valSig = nodo_next->costeCamino + nodo_next->valHeuristica;
             }
-            printf("Val i: %d, Val next: %d\n", valActual, valSig);
+//            printf("Val i: %d, Val next: %d\n", valActual, valSig);
             if(valActual > valSig) {
                 ordenado = 0;
                 e = C->elementos[i];

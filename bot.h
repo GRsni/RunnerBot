@@ -12,6 +12,11 @@
 #define ROBOT 2
 #define RATON 3
 
+#endif // CONSTANTES
+
+#ifndef MAPA_INICIAL
+#define MAPA_INICIAL
+
 #if N==2
 static int mapa_inicial[N][N] = {
     {RATON, ROBOT},
@@ -48,10 +53,11 @@ static int mapa_inicial[N][N] = {
     {VACIO, PARED, VACIO, VACIO, PARED, VACIO, VACIO},
     {VACIO, VACIO, VACIO, VACIO, VACIO, VACIO, VACIO}
 };
+#else
+static int mapa_inicial[N][N];
 
 #endif // N
-
-#endif // CONSTANTES
+#endif // MAPA_INICIAL
 
 #ifndef _tEstado_
 #define _tEstado_
