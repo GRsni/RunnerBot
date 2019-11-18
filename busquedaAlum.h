@@ -40,6 +40,9 @@ int busquedaLocal();
 /*Realiza una busqueda local en haz con numero de nodos abiertos igual a haz*/
 int busquedaHaz(int haz);
 
+/*Devuelve 1 si el sig es un sucesor valido(decreciente) de actual, 0 en otro caso*/
+int sucesorValido(tNodo *actual, tNodo *sig);
+
 /*Calcula el valor de heuristica del nodo segun el tipo elegido*/
 int calculaHeuristica(tEstado *estado);
 
