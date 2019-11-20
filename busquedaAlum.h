@@ -1,10 +1,3 @@
-/*******************************************/
-/* 		    BUSQUEDA.H                     */
-/*						                   */
-/* Asignatura: Inteligencia Artificial     */
-/* Grado en Ingenieria Informatica - UCA   */
-/*******************************************/
-
 #define ANCHURA 0
 #define PROFUNDIDAD 1
 #define PROF_ITER 1

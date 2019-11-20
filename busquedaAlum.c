@@ -1,10 +1,3 @@
-/*******************************************/
-/* 		    BUSQUEDA.C                     */
-/*						                   */
-/* Asignatura: Inteligencia Artificial     */
-/* Grado en Ingenieria Informatica - UCA   */
-/*******************************************/
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -15,7 +8,7 @@
 #include "busquedaAlum.h"
 #include "menu.h"
 
-extern tEstado *inicial;
+extern tEstado *estadoInic;
 extern int heuristica;
 
 void dispCamino(tNodo *nodo) {
@@ -42,11 +35,11 @@ void dispSolucion(tNodo *nodo) {
 tNodo *nodoInicial() {
     tNodo *nodoInicial = (tNodo *) malloc(sizeof(tNodo));
 
-    nodoInicial->estado = inicial;
+    nodoInicial->estado = estadoInic;
     nodoInicial->padre = NULL;
     nodoInicial->costeCamino = 0;
     nodoInicial->profundidad = 0;
-    nodoInicial->valHeuristica = calculaHeuristica(inicial);//heuristica distancia robot
+    nodoInicial->valHeuristica = calculaHeuristica(estadoInic);//heuristica distancia robot
     return nodoInicial;
 }
 
@@ -238,41 +231,67 @@ int busquedaLocal() {
 }
 
 int busquedaHaz(int haz) {
-    int objetivo = 0, contador = 0;
-    tNodo *Actual = (tNodo *) malloc(sizeof(tNodo));
-    tNodo *Siguiente = (tNodo *) malloc(sizeof(tNodo));
+    int objetivo = 0, contador = 0, i = 0;
+    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
     tNodo *Inicial = nodoInicial();
-//    dispCamino(Inicial);
-    //tEstado *Final=estadoObjetivo();
 
     Lista Abiertos = (Lista) CrearLista(haz);
-    Lista Sucesores, Cerrados = (Lista) CrearLista(MAXI);
+    Lista Cerrados = (Lista) CrearLista(MAXI);
     Lista NoValidos = (Lista) CrearLista(MAXI);
+    Lista Sucesores;
+    Lista Siguientes = (Lista) CrearLista(MAXI);
 
     InsertarUltimo((void *) Inicial, Abiertos);
+    Actual = (void *) ExtraerPrimero(Abiertos);
+    EliminarPrimero(Abiertos);
+    InsertarUltimo((void *)Actual, Cerrados);
+    Sucesores = expandir(Actual);
+    Ordenar(Sucesores, GREEDY);
 
-    while(!objetivo && !ListaVacia(Abiertos)) {
-        contador++;
-        Actual = (void *)ExtraerPrimero(Abiertos);
-        EliminarPrimero(Abiertos);
-        if(!esRepetido(Actual->estado, Cerrados)) {
-            objetivo = testObjetivo(Actual->estado);
-            if(objetivo == 0) {
-                Sucesores = expandir(Actual);
-                Ordenar(Sucesores, ASTAR);
-                Siguiente = (void *)ExtraerPrimero(Sucesores);
-                if(sucesorValido(Actual, Siguiente)) {
-                    InsertarUltimo((void *)Siguiente, Abiertos);
-                }
-            } else if(objetivo == -1) {
-                InsertarPrimero((void* )Actual, NoValidos);
-            }
-        }
-
+    i = 0;
+    while(i < haz && !ListaLlena(Abiertos) && !ListaVacia(Sucesores)) {
+        Actual = (void *)ExtraerPrimero(Sucesores);
+        printf("Nodo: %d, %d\n", Actual->profundidad, Actual->valHeuristica);
+        InsertarUltimo((void *)Actual, Abiertos);
+        EliminarPrimero(Sucesores);
+        i++;
     }
 
-    printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
+    printf("%d\n", Abiertos->Nelem);
+    printf("%d\n", Sucesores->Nelem);
+    system("pause");
+//    return 1;
+
+    while(objetivo < 1) {
+        while(!ListaVacia(Abiertos) && objetivo < 1) {
+            Actual = (void *)ExtraerPrimero(Abiertos);
+            EliminarPrimero(Abiertos);
+            if(!esRepetido(Actual->estado, Cerrados)) {
+                int objAux = testObjetivo(Actual->estado);
+                if(objAux == 1) {
+                    objetivo = objAux;
+                }
+                printf("objetivo aux %d\n", objetivo);
+                if(objAux == 0) {
+                    Sucesores = expandir(Actual);
+                    printf("Tam sucesores: %d\n", Sucesores->Nelem);
+                    Concatenar(Siguientes, Sucesores);
+                }else{
+                    InsertarPrimero((void *)Actual, NoValidos);
+                }
+            }
+            InsertarPrimero((void *)Actual, Cerrados);
+        }
+        printf("Tam Sucesores: %d, tam siguientes: %d\n", Sucesores->Nelem, Siguientes->Nelem);
+
+        Ordenar(Siguientes, GREEDY);
+        while(i < haz && !ListaVacia(Siguientes)) {
+            Actual = (void *)ExtraerPrimero(Siguientes);
+            EliminarPrimero(Siguientes);
+            InsertarUltimo((void *)Actual, Abiertos);
+        }
+    }
 
 
     if(ListaVacia(Abiertos) || objetivo == -1) {
@@ -288,6 +307,7 @@ int busquedaHaz(int haz) {
 }
 
 int sucesorValido(tNodo *actual, tNodo *sig) {
+    printf("Val actual: %d, val sucesor: %d\n", actual->valHeuristica, sig->valHeuristica);
     return sig->valHeuristica < actual->valHeuristica;
 }
 
@@ -296,6 +316,7 @@ int esRepetido(tEstado * actual, Lista C) {
     int i = 0, repetido = 0;
 
     while(i < C->Nelem && !repetido) {
+        printf("%d\n", i);
         tNodo *nodo_cerrado = (void *)ExtraerElem(C, i);
         if(iguales(nodo_cerrado->estado, actual)) {
             repetido = 1;
@@ -307,10 +328,15 @@ int esRepetido(tEstado * actual, Lista C) {
 
 int calculaHeuristica(tEstado * estado) {
     int val = 0;
-    if(heuristica == DISTROB) {
+    switch (heuristica) {
+    case DISTROB:
         val = distObjetivo(estado);
-    } else if(heuristica == DISTROBRAT) {
+        break;
+    case DISTROBRAT:
         val = (distObjetivo(estado) + distRaton(estado));
+        break;
+    default:
+        val = distObjetivo(estado);
     }
     return val;
 }
@@ -341,6 +367,7 @@ void Ordenar(Lista C, int selector) {
                 valActual = nodo_i->costeCamino + nodo_i->valHeuristica;
                 valSig = nodo_next->costeCamino + nodo_next->valHeuristica;
             }
+            printf("Val n: %d, val next: %d\n", valActual, valSig);
             if(valActual > valSig) {
                 ordenado = 0;
                 e = C->elementos[i];

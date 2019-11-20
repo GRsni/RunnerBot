@@ -241,20 +241,7 @@ int testObjetivo(tEstado *estado) {
 }
 
 int iguales(tEstado *a, tEstado *b) {
-    int iguales = 1, i, j;
-    if (a->mouseCol != b->mouseCol || a->mouseRow != b->mouseRow || a->robCol != b->robCol || a->robRow != b->robRow) {
-        iguales = 0;
-    } else {
-        while(iguales == 1 && i < N) {
-            while(iguales == 1 && j < N) {
-                if(a->celdas[i][j] != b->celdas[i][j]) {
-                    iguales = 0;
-                }
-                j++;
-            }
-            j = 0;
-            i++;
-        }
-    }
-    return iguales;
+    return (a->mouseCol == b->mouseCol && a->mouseRow == b->mouseRow && a->robCol == b->robCol && a->robRow == b->robRow);
 }
+
+

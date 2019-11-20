@@ -6,13 +6,15 @@
 #include "utility.h"
 #include "listaia.h"
 #include "menu.h"
+#include "busquedaAlum.h"
 
-tEstado *inicial;
+tEstado *estadoInic;
+//int heuristica=DISTROB;
 int heuristica;
 
 void inicializaPrograma() {
     srand(time(NULL));
-    inicial = (tEstado* )malloc(sizeof(tEstado));
+    estadoInic = (tEstado* )malloc(sizeof(tEstado));
 }
 
 int main() {

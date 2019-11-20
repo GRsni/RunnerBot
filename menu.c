@@ -7,14 +7,14 @@
 #include "busquedaAlum.h"
 #include "bot.h"
 
-extern tEstado *inicial;
+extern tEstado *estadoInic;
 extern int heuristica;
 
 void menuPrincipal() {
     int continua = 1;
     printf("Bienvenido al programa RunnerBot.\nDesarrollado por Santiago Jesus Mas.\n\n");
 
-    inicial = menuSeleccionEstado();
+    estadoInic = menuSeleccionEstado();
     do {
         continua = menuBusqueda();
     } while(continua == 1);
@@ -61,7 +61,7 @@ int menuFuncionHeuristica() {
 
 int menuBusqueda() {
     int selector = 0, salida = 1;
-    dispEstado(inicial);
+    dispEstado(estadoInic);
     printf("Elige el algoritmo de busqueda que quieres emplear:\n");
     printf("[1]Busqueda en anchura\n[2]Busqueda en profundidad.\n[3]Busqueda en profundidad limitada.\n");
     printf("[4]Busqueda en profundidad iterativa.\n[5]Busqueda heuristica voraz.\n[6]Busqueda heuristica A*.\n");
@@ -119,7 +119,7 @@ void eligeAccionBusquedaSalir(int selector) {
         busquedaHaz(item);
         break;
     case 9:
-        inicial = menuSeleccionEstado();
+        estadoInic = menuSeleccionEstado();
         break;
     case 10:
         printf("------SALIENDO DEL PROGRAMA------\n\n");
