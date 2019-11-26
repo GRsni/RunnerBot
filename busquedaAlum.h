@@ -54,3 +54,6 @@ int distObjetivo(tEstado *estado);
 
 /*Devuelve la distancia del raton al objetivoç*/
 int distRaton(tEstado *estado);
+
+/*Destruye 4 listas(las listas utilizadas en las busquedas)*/
+void destruirListasUsadas(Lista L1, Lista L2, Lista L3, Lista L4);

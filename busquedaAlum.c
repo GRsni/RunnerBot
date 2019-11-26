@@ -48,7 +48,6 @@ tNodo *nodoInicial() {
 Lista expandir(tNodo *nodo) {
     unsigned op;
     Lista sucesores = CrearLista(MAXI);
-    // printf("\nLista de Sucesores de Actual: \n");
     for (op = 1; op <= NUM_OPERADORES; op++) {
         if (esValido(op, nodo->estado)) {
             tNodo *nuevo = (tNodo *) malloc(sizeof(tNodo));
@@ -72,8 +71,8 @@ Lista expandir(tNodo *nodo) {
 
 int busquedaACiegas(int selector) {
     int objetivo = 0, contador = 0, continua = 1;
-    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
+    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
     tNodo *Inicial = nodoInicial();
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
@@ -103,7 +102,6 @@ int busquedaACiegas(int selector) {
             }
         }
         InsertarUltimo((void *)Actual, Cerrados);
-//        system("pause");
     }
     if(ListaVacia(Abiertos) || objetivo == -1) {
         if(!ListaVacia(NoValidos)) {
@@ -116,13 +114,14 @@ int busquedaACiegas(int selector) {
         printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
         printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
     }
+    destruirListasUsadas(Abiertos, Cerrados, Sucesores, NoValidos);
     return objetivo;
 }
 
 int busquedaProfundidadLimitada(int prof) {
     int objetivo = 0, contador = 0, enRango = 1;
-    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
+    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
     tNodo *Inicial = nodoInicial();
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
@@ -140,6 +139,7 @@ int busquedaProfundidadLimitada(int prof) {
 
         if(!esRepetido(Actual->estado, Cerrados)) {
             enRango = nodoNoSuperaProfundidad(Actual->profundidad, prof);
+            printf("en rango?: %d\n", enRango);
             if(enRango) {
                 objetivo = testObjetivo(Actual->estado);
                 printf("objetivo de nodo en rango: %d\n", objetivo);
@@ -155,19 +155,18 @@ int busquedaProfundidadLimitada(int prof) {
     }
 
     printf("rango %d, objetivo %d\n", enRango, objetivo);
-    if(objetivo == 0) {
-        printf("------------SOLUCION NO ENCONTRADA EN LA PROFUNDIDAD LIMITE-------------\n");
-    } else if(objetivo == 1) {
+    if(objetivo == 1) {
         dispSolucion(Actual);
-        printf("-------------------------SOLUCION ENCONTRADA----------------------------\n");
+        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
         printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
-    } else if(objetivo == -1) {
+    } else if(ListaVacia(Abiertos) || objetivo == -1) {
         if(!ListaVacia(NoValidos)) {
-            Actual = (void *) ExtraerPrimero(NoValidos);
+            Actual = (void *)ExtraerPrimero(NoValidos);
             dispCamino(Actual);
         }
-        printf("------------------------SOLUCION NO ENCONTRADA--------------------------\n");
+        printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
     }
+    destruirListasUsadas(Abiertos, Cerrados, Sucesores, NoValidos);
     return objetivo;
 }
 
@@ -181,17 +180,18 @@ int busquedaProfundidaIterativa() {
     do {
         objetivo = busquedaProfundidadLimitada(prof);
         prof++;
-    } while(objetivo != 1);
+    } while(objetivo != 1 && prof < 100);
+    if(prof==100){
+         printf("---------------SOLUCION NO ENCONTRADA EN 100 ITERACIONES---------------\n");
+    }
     return objetivo;
 }
 
 int busquedaHeuristica(int selector) {
     int objetivo = 0, contador = 0;
-    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
+    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
     tNodo *Inicial = nodoInicial();
-//    dispCamino(Inicial);
-    //tEstado *Final=estadoObjetivo();
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
     Lista Sucesores, Cerrados = (Lista) CrearLista(MAXI);
@@ -218,17 +218,18 @@ int busquedaHeuristica(int selector) {
         }
     }
 
-    if(ListaVacia(Abiertos) || objetivo == -1) {
+    if(objetivo == 1) {
+        dispSolucion(Actual);
+        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
+        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
+    } else if(ListaVacia(Abiertos) || objetivo == -1) {
         if(!ListaVacia(NoValidos)) {
             Actual = (void *)ExtraerPrimero(NoValidos);
             dispCamino(Actual);
         }
         printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
-    } else if(objetivo == 1) {
-        dispSolucion(Actual);
-        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
-        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
     }
+    destruirListasUsadas(Abiertos, Cerrados, Sucesores, NoValidos);
     return objetivo;
 
 }
@@ -240,8 +241,8 @@ int busquedaLocal() {
 int busquedaHaz(int haz) {
     int objetivo = 0, contador = 0,  i = 0;
     heuristica = DISTROB;
-    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
+    tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
     tNodo *Inicial = nodoInicial();
 
     Lista Abiertos = (Lista) CrearLista(MAXI);
@@ -317,17 +318,18 @@ int busquedaHaz(int haz) {
         }
         printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
     }
+    destruirListasUsadas(Abiertos, Cerrados, Sucesores, NoValidos);
+    DestruirLista(Siguientes);
     return objetivo;
 }
 
 Lista ConcatenarValidos(Lista L1, Lista L2, tNodo *Actual) {
     tNodo *e = (void *) malloc(sizeof(tNodo));
-    int tam = L2->Nelem;
 
     while (!ListaVacia(L2) && (!ListaLlena(L1))) {
         e = (void*) ExtraerPrimero(L2);
         if(sucesorValido(Actual, e)) {
-            InsertarUltimo(e, L1);
+            InsertarUltimo((void *)e, L1);
         }
         EliminarPrimero(L2);
     }
@@ -407,5 +409,11 @@ void Ordenar(Lista C, int selector) {
     } while(!ordenado);
 }
 
+void destruirListasUsadas(Lista L1, Lista L2, Lista L3, Lista L4) {
+    DestruirLista(L1);
+    DestruirLista(L2);
+    DestruirLista(L3);
+    DestruirLista(L4);
+}
 
 
