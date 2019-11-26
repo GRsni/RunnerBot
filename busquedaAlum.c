@@ -142,6 +142,7 @@ int busquedaProfundidadLimitada(int prof) {
             enRango = nodoNoSuperaProfundidad(Actual->profundidad, prof);
             if(enRango) {
                 objetivo = testObjetivo(Actual->estado);
+                printf("objetivo de nodo en rango: %d\n", objetivo);
                 if (objetivo == 0) {
                     Sucesores = expandir(Actual);
                     Abiertos = Concatenar(Sucesores, Abiertos);
@@ -149,10 +150,8 @@ int busquedaProfundidadLimitada(int prof) {
                     InsertarUltimo((void* )Actual, NoValidos);
                 }
             }
+            InsertarUltimo((void *)Actual, Cerrados);
         }
-//        printf("Abiertos: %d, Cerrados: %d\n", Abiertos->Nelem, Cerrados->Nelem);
-        InsertarUltimo((void *)Actual, Cerrados);
-//        system("pause");
     }
 
     printf("rango %d, objetivo %d\n", enRango, objetivo);
@@ -173,6 +172,7 @@ int busquedaProfundidadLimitada(int prof) {
 }
 
 int nodoNoSuperaProfundidad(int profNodo, int prof) {
+    printf("prof nodo: %d, prof max: %d\n", profNodo, prof);
     return profNodo <= prof;
 }
 
@@ -216,9 +216,8 @@ int busquedaHeuristica(int selector) {
 
             InsertarUltimo((void *)Actual, Cerrados);
         }
-        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
-//        system("pause");
     }
+
     if(ListaVacia(Abiertos) || objetivo == -1) {
         if(!ListaVacia(NoValidos)) {
             Actual = (void *)ExtraerPrimero(NoValidos);
@@ -239,7 +238,7 @@ int busquedaLocal() {
 }
 
 int busquedaHaz(int haz) {
-    int objetivo = 0, i = 0;
+    int objetivo = 0, contador = 0,  i = 0;
     heuristica = DISTROB;
     tNodo *Actual = (tNodo*) malloc(sizeof(tNodo));
 
@@ -252,80 +251,92 @@ int busquedaHaz(int haz) {
     Lista Siguientes = (Lista) CrearLista(MAXI);
 
     //EXPANDIR LOS PRIMEROS NODOS SUCESORES Y SELECCIONAR LOS 'HAZ' MEJORES//
-    InsertarUltimo((void *) Inicial, Abiertos);
-    Actual = (void *) ExtraerPrimero(Abiertos);
-    EliminarPrimero(Abiertos);
-    InsertarUltimo((void *)Actual, Cerrados);
-    Sucesores = expandir(Actual);
+    InsertarUltimo((void *)Inicial, Cerrados);
+    Sucesores = expandir(Inicial);
     Ordenar(Sucesores, GREEDY);
 
     i = 0;
-    while(i < haz && !ListaLlena(Abiertos) && !ListaVacia(Sucesores)) {
+    while(!ListaLlena(Abiertos) && !ListaVacia(Sucesores)) {
         Actual = (void *)ExtraerPrimero(Sucesores);
-        printf("Nodo: %d, %d\n", Actual->profundidad, Actual->valHeuristica);
-        InsertarUltimo((void *)Actual, Abiertos);
+        if(i < haz) {
+            InsertarUltimo((void *)Actual, Abiertos);
+        } else {
+            InsertarUltimo((void *)Actual, Cerrados);
+        }
         EliminarPrimero(Sucesores);
         i++;
     }
 
-    printf("num abiertos: %d\n", Abiertos->Nelem);
 
     //N MEJORES SUCESORES ELEGIDOS//
-
     while(objetivo < 1 && !ListaVacia(Abiertos)) { //ITERAR HASTA OBJETIVO O NO MAS SUCESORES
 
 
         while(!ListaVacia(Abiertos)) {    //PARA CADA ABIERTO
             Actual = (void *)ExtraerPrimero(Abiertos);
-            dispEstado(Actual->estado);
+            contador++;
             EliminarPrimero(Abiertos);
             if(!esRepetido(Actual->estado, Cerrados)) { //COMPROBAR SI OBJETIVO
                 objetivo = testObjetivo(Actual->estado);
-                printf("objetivo: %d\n", objetivo);
                 if(objetivo == -1) {
                     InsertarUltimo((void *)Actual, NoValidos);
                 } else if(objetivo == 0) { //SI OBJETIVO == 0, SACAR LOS SUCESORES
                     Sucesores = expandir(Actual);
                     //AGRUPARLOS TODOS LOS SUCESORES
-                    Siguientes = Concatenar(Siguientes, Sucesores);
-                    printf("siguientes: %d\n", Siguientes->Nelem);
+                    Siguientes = ConcatenarValidos(Siguientes, Sucesores, Actual);
                 }
                 InsertarUltimo((void *)Actual, Cerrados);
             }
         }
-        printf("abiertos; %d, siguientes: %d\n", Abiertos->Nelem, Siguientes->Nelem);
         if(objetivo != 1) { //ORDENAR TODOS LOS NODOS SUCESORES
             Ordenar(Siguientes, GREEDY);
             //OBTENER LOS N SIGUIENTES
             i = 0;
-            while(i < haz && !ListaVacia(Siguientes)) {
+            while(!ListaVacia(Siguientes)) {
                 Actual = (void *)ExtraerPrimero(Siguientes);
-                printf("Nodo: %d, %d\n", Actual->profundidad, Actual->valHeuristica);
-                InsertarUltimo((void *)Actual, Abiertos);
-                EliminarPrimero(Sucesores);
+                if(i < haz) {
+                    InsertarUltimo((void *)Actual, Abiertos);
+                    dispEstado(Actual->estado);
+                } else {
+                    InsertarUltimo((void *)Actual, Cerrados);
+                }
+                EliminarPrimero(Siguientes);
                 i++;
             }
-            printf("Cerrados: %d\n", Cerrados->Nelem);
-            system("pause");
-
         }
     }
 
-
-//    if(ListaVacia(Abiertos) || objetivo == -1) {
-//        Actual = (void *)ExtraerPrimero(NoValidos);
-//        dispCamino(Actual);
-//        printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
-//    } else if(objetivo == 1) {
-//        dispSolucion(Actual);
-//        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
-//        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
-//    }
+    if(objetivo == 1) {
+        dispSolucion(Actual);
+        printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
+        printf("Numero de nodos visitados: %d, Abiertos: %d, Cerrados: %d\n", contador, Abiertos->Nelem, Cerrados->Nelem);
+    } else if(ListaVacia(Abiertos) || objetivo == -1) {
+        if(!ListaVacia(NoValidos)) {
+            Actual = (void *)ExtraerPrimero(NoValidos);
+            dispCamino(Actual);
+        }
+        printf("--------------------SOLUCION NO ENCONTRADA------------------------------\n");
+    }
     return objetivo;
 }
 
+Lista ConcatenarValidos(Lista L1, Lista L2, tNodo *Actual) {
+    tNodo *e = (void *) malloc(sizeof(tNodo));
+    int tam = L2->Nelem;
+
+    while (!ListaVacia(L2) && (!ListaLlena(L1))) {
+        e = (void*) ExtraerPrimero(L2);
+        if(sucesorValido(Actual, e)) {
+            InsertarUltimo(e, L1);
+        }
+        EliminarPrimero(L2);
+    }
+    return L1;
+
+}
+
+
 int sucesorValido(tNodo * actual, tNodo * sig) {
-    printf("Val actual: %d, val sucesor: %d\n", actual->valHeuristica, sig->valHeuristica);
     return sig->valHeuristica < actual->valHeuristica;
 }
 
@@ -378,13 +389,12 @@ void Ordenar(Lista C, int selector) {
             tNodo *nodo_i = (void *)ExtraerElem(C, i);
             tNodo *nodo_next = (void *)ExtraerElem(C, i + 1);
             if(selector == GREEDY) {
-                valActual = nodo_i->costeCamino;
-                valSig = nodo_next->costeCamino;
+                valActual = nodo_i->valHeuristica;
+                valSig = nodo_next->valHeuristica;
             } else if(selector == ASTAR) {
                 valActual = nodo_i->costeCamino + nodo_i->valHeuristica;
                 valSig = nodo_next->costeCamino + nodo_next->valHeuristica;
             }
-            printf("Val n: %d, val next: %d\n", valActual, valSig);
             if(valActual > valSig) {
                 ordenado = 0;
                 e = C->elementos[i];
@@ -393,7 +403,6 @@ void Ordenar(Lista C, int selector) {
 
             }
         }
-        printf("\n");
         tam--;
     } while(!ordenado);
 }

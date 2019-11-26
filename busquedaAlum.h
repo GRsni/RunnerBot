@@ -33,6 +33,10 @@ int busquedaLocal();
 /*Realiza una busqueda local en haz con numero de nodos abiertos igual a haz*/
 int busquedaHaz(int haz);
 
+/*Devuelve C1+C2 segun la condicion de validez de sucesor
+-Precondiciones: C1 no vacia*/
+Lista ConcatenarValidos(Lista C1, Lista C2, tNodo *actual);
+
 /*Devuelve 1 si el sig es un sucesor valido(decreciente) de actual, 0 en otro caso*/
 int sucesorValido(tNodo *actual, tNodo *sig);
 
