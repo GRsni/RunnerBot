@@ -30,9 +30,9 @@ static int mapa_inicial[N][N] = {
 };
 #elif N==4
 static int mapa_inicial[N][N] = {
-    {VACIO, VACIO, PARED, ROBOT},
-    {VACIO, RATON, PARED, PARED},
-    {VACIO, VACIO, VACIO, VACIO},
+    {VACIO, VACIO, VACIO, ROBOT},
+    {VACIO, RATON, VACIO, PARED},
+    {VACIO, VACIO, PARED, VACIO},
     {VACIO, VACIO, VACIO, VACIO}
 };
 #elif N==5

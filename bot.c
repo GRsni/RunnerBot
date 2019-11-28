@@ -59,28 +59,6 @@ tEstado* creaEstadoAleatorio() {
     return crearEstado(celdas);
 }
 
-
-tEstado *crearEstado(int celdas[N][N]) {
-    tEstado *estado = (tEstado *)malloc(sizeof(tEstado));
-    int row, col;
-    for(row = 0; row < N; row++) {
-        for(col = 0; col < N; col++) {
-            int valor = celdas[row][col];
-            if(celdas[row][col] == ROBOT) {
-                estado->robRow = row;
-                estado->robCol = col;
-                valor = VACIO;
-            } else if(celdas[row][col] == RATON) {
-                estado->mouseRow = row;
-                estado->mouseCol = col;
-                valor = VACIO;
-            }
-            estado->celdas[row][col] = valor;
-        }
-    }
-    return estado;
-}
-
 void eligePosRatonAleatoria(int tam, int celdas[tam][tam]) {
     int pos;
     do {
@@ -110,6 +88,27 @@ void colocaParedesAleatorias(int tam, int celdas[tam][tam]) {
 //        printf("Colocando muro en [%d, %d]\n", row, col);
         celdas[row][col] = PARED;
     }
+}
+
+tEstado *crearEstado(int celdas[N][N]) {
+    tEstado *estado = (tEstado *)malloc(sizeof(tEstado));
+    int row, col;
+    for(row = 0; row < N; row++) {
+        for(col = 0; col < N; col++) {
+            int valor = celdas[row][col];
+            if(celdas[row][col] == ROBOT) {
+                estado->robRow = row;
+                estado->robCol = col;
+                valor = VACIO;
+            } else if(celdas[row][col] == RATON) {
+                estado->mouseRow = row;
+                estado->mouseCol = col;
+                valor = VACIO;
+            }
+            estado->celdas[row][col] = valor;
+        }
+    }
+    return estado;
 }
 
 int coste(unsigned op, tEstado *estado) {
