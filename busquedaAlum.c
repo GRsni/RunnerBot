@@ -139,27 +139,20 @@ int busquedaProfundidadLimitada(int prof) {
 //        dispCamino(Actual);
 
         enRango = nodoNoSuperaProfundidad(Actual->profundidad, prof);
-        printf("en rango?: %d\n", enRango);
         if(enRango) {
-            if(!esRepetido(Actual->estado, Cerrados)) {
-                objetivo = testObjetivo(Actual->estado);
-                printf("objetivo de nodo en rango: %d\n", objetivo);
-                if (objetivo == 0) {
-                    Sucesores = expandir(Actual);
-                    Abiertos = Concatenar(Sucesores, Abiertos);
-                } else if(objetivo == -1) {
-                    InsertarUltimo((void* )Actual, NoValidos);
-                }
+            objetivo = testObjetivo(Actual->estado);
+            if (objetivo == 0) {
+                Sucesores = expandir(Actual);
+                Abiertos = Concatenar(Sucesores, Abiertos);
+            } else if(objetivo == -1) {
+                InsertarUltimo((void* )Actual, NoValidos);
             }
             InsertarUltimo((void *)Actual, Cerrados);
-        } else {
-            printf("Estado repetido\n");
         }
 
 //        system("pause");
     }
 
-    printf("rango %d, objetivo %d\n", enRango, objetivo);
     if(objetivo == 1) {
         dispSolucion(Actual);
         printf("----------------------SOLUCION ENCONTRADA-------------------------------\n");
@@ -176,7 +169,6 @@ int busquedaProfundidadLimitada(int prof) {
 }
 
 int nodoNoSuperaProfundidad(int profNodo, int prof) {
-    printf("prof nodo: %d, prof max: %d\n", profNodo, prof);
     return profNodo <= prof;
 }
 
