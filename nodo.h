@@ -1,9 +1,3 @@
-/*******************************************/
-/* 		    NODO.H                         */
-/*						                   */
-/* Asignatura: Inteligencia Artificial     */
-/* Grado en Ingenieria Informatica - UCA   */
-/*******************************************/
 
 #ifndef _tNodo_
 #define _tNodo_

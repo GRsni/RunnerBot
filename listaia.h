@@ -1,12 +1,3 @@
-/**************************************************************/
-/* 		    LISTAIA.C                                         */
-/*						                                      */
-/* Asignatura: Inteligencia Artificial                        */
-/* Funciones para manejar listas estáticas de acuerdo         */
-/*           a las necesidades de la estrategia               */
-/*           de busqueda                                      */
-/**************************************************************/
-
 
 #define MAXI 3000
 

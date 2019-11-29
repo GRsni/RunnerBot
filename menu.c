@@ -4,7 +4,7 @@
 
 #include "menu.h"
 #include "utility.h"
-#include "busquedaAlum.h"
+#include "busqueda.h"
 #include "bot.h"
 
 extern tEstado *estadoInic;
@@ -44,21 +44,6 @@ tEstado* eligeModoCrearEstado(int selector) {
     }
 }
 
-int menuFuncionHeuristica() {
-    int selector;
-    printf("Elige la funcion heuristica a emplear:\n");
-    printf("[1]Distancia del robot al objetivo.\n[2]Distancia del robot+distancia del raton.\n");
-    do {
-        printf("->");
-        scanf("%d", &selector);
-        if(selectorFueraDeRango(selector, 1, 2)) {
-            imprimeSelectorFueraDeRango();
-        }
-    } while(selectorFueraDeRango(selector, 1, 2));
-    return selector;
-
-}
-
 int menuBusqueda() {
     int selector = 0, salida = 1;
     dispEstado(estadoInic);
@@ -77,6 +62,9 @@ int menuBusqueda() {
         salida = 0;
     }
     eligeAccionBusquedaSalir(selector);
+    if(selector < 10) {
+        system("pause");
+    }
     return salida;
 }
 
@@ -125,9 +113,21 @@ void eligeAccionBusquedaSalir(int selector) {
         printf("------SALIENDO DEL PROGRAMA------\n\n");
         break;
     }
-    if(selector < 10) {
-        system("pause");
-    }
+}
+
+int menuFuncionHeuristica() {
+    int selector;
+    printf("Elige la funcion heuristica a emplear:\n");
+    printf("[1]Distancia del robot al objetivo.\n[2]Distancia del robot+distancia del raton.\n");
+    do {
+        printf("->");
+        scanf("%d", &selector);
+        if(selectorFueraDeRango(selector, 1, 2)) {
+            imprimeSelectorFueraDeRango();
+        }
+    } while(selectorFueraDeRango(selector, 1, 2));
+    return selector;
+
 }
 
 int introduceProfMaxima() {
@@ -144,7 +144,7 @@ int introduceProfMaxima() {
 }
 
 int introduceTamanoHaz() {
-    int item=0;
+    int item = 0;
     printf("Elige el numero de nodos del haz[2-4]:\n");
     do {
         printf("->");

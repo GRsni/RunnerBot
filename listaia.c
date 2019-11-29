@@ -1,12 +1,3 @@
-/**************************************************************/
-/* 		    LISTAIA.C                                         */
-/*						                                      */
-/* Asignatura: Inteligencia Artificial                        */
-/* Funciones para manejar listas estáticas de acuerdo         */
-/*           a las necesidades de la estrategia               */
-/*           de busqueda                                      */
-/**************************************************************/
-
 
 #include <stdlib.h>
 #include <stdio.h>

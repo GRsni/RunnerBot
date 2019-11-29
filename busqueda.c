@@ -5,7 +5,7 @@
 #include "bot.h"
 #include "nodo.h"
 #include "listaia.h"
-#include "busquedaAlum.h"
+#include "busqueda.h"
 #include "menu.h"
 
 extern tEstado *estadoInic;
@@ -136,7 +136,6 @@ int busquedaProfundidadLimitada(int prof) {
 
         Actual = (void *) ExtraerPrimero(Abiertos);
         EliminarPrimero(Abiertos);
-//        dispCamino(Actual);
 
         enRango = nodoNoSuperaProfundidad(Actual->profundidad, prof);
         if(enRango) {
@@ -149,8 +148,6 @@ int busquedaProfundidadLimitada(int prof) {
             }
             InsertarUltimo((void *)Actual, Cerrados);
         }
-
-//        system("pause");
     }
 
     if(objetivo == 1) {
@@ -250,7 +247,7 @@ int busquedaHaz(int haz) {
     Lista Sucesores;
     Lista Siguientes = (Lista) CrearLista(MAXI);
 
-    //EXPANDIR LOS PRIMEROS NODOS SUCESORES Y SELECCIONAR LOS 'HAZ' MEJORES//
+    //EXPANDIR LOS PRIMEROS NODOS SUCESORES Y SELECCIONAR LOS 'HAZ' MEJORES
     InsertarUltimo((void *)Inicial, Cerrados);
     Sucesores = expandir(Inicial);
     Ordenar(Sucesores, GREEDY);
